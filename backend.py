@@ -6,10 +6,10 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-			if request.form['username'] != "admin" or request.form['password'] != "admin":
-				print('Usuário ou senha inválidos.')
-			else:
-				return redirect(url_for('planetas'))
+		if request.form['username'] != "admin" or request.form['password'] != "admin":
+			print('Usuário ou senha inválidos.')
+		else:
+			return redirect(url_for('planetas'))
 	return render_template("login.html")
 
 @app.route("/planetas")
