@@ -12,10 +12,25 @@ class Usuario():
 @app.route("/", methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		if request.form['username'] != "admin" or request.form['password'] != "admin":
-			print('Usuário ou senha inválidos.')
-		else:
-			return redirect(url_for('planetas'))
+		with open("data.txt", 'r') as f:
+			for linha in f:
+				usuario = ""
+				i = 0
+				while (linha[i] != " "):
+					usuario += linha[i]
+					i += 1
+				if (usuario == request.form["username"]):
+					i += 1
+					senha = ""
+					for j in range(i, len(linha)):
+						senha += linha[j]
+					if (senha == request.form["password"]):
+						return render_template("planetas.html")
+					else:
+						print("Senha inválida")
+				else:
+					print("Usuário inválido")
+					 
 	return render_template("login.html")
 
 @app.route("/registrar", methods=['GET', 'POST'])
