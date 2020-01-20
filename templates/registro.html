@@ -1,0 +1,14 @@
+<html>
+<link rel="stylesheet" type="text/css" href="login.css">
+
+	<div class="loginbox">
+		<form action="" method="post">
+			<input type="text" placeHolder="Usuário" name="username"
+				value="{{ request.form.username }}"><br>
+			<input type="password" placeHolder="Senha" name="password"
+				value="{{ request.form.password }}"><br>
+			<input class="btn btn-default" type="submit" value="Registrar">
+		</form>
+	</div>
+	
+</html>
