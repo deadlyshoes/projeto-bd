@@ -1,2 +1,1 @@
-FLASK_APP=backend.py
-flask run
+web: gunicorn app: backend
