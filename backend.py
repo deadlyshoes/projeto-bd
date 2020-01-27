@@ -20,9 +20,19 @@ def login():
 def entidades():
 	return render_template("entidades.html")
 	
-@app.route("/add_planeta")
+@app.route("/add_planeta", methods=['GET', 'POST'])
 def add_planeta():
+	if request.method == 'POST':
+		nome = request.form["nome"]
+		return render_template("entidades.html")	 
 	return render_template("add_planeta.html")
+	
+@app.route("/busca", methods=['GET', 'POST'])
+def buscar():
+	if request.method == 'POST':
+		nome = request.form["nome"]
+		return render_template("entidades.html")
+	return render_template("busca.html")
 
 if __name__ == "__main__":
 	app.run(threaded=True, port=5000)

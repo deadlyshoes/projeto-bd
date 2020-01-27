@@ -4,21 +4,22 @@
 <body>
 	<div class = login-box>
 		<form action="" method="post">
-			<label for="nome">Nome</label>
+			<label for="nome">Nome</label><br>
 			<input type="text" name="nome"
 				value="{{ request.form.nome }}"><br>
-			<label for="tamanho">Tamanho</label>
+			<label for="tamanho">Tamanho</label><br>
 			<input type="text" name="tamanho"
 				value="{{ request.form.tam }}"><br>
-			<label for="massa">Massa</label>
+			<label for="massa">Massa</label><br>
 			<input type="text" name="massa"
 				value="{{ request.form.mass }}"><br>
-			<label for="gravidade">Gravidade</label>
+			<label for="gravidade">Gravidade</label><br>
 			<input type="text" name="gravidade"
 				value="{{ request.form.grav }}"><br>
-			<label for="composicao">Composicao</label>
+			<label for="composicao">Composição</label><br>
 			<input type="text" name="composicao"
-				value="{{ request.form.comp }}"><br>
+				value="{{ request.form.comp }}">
+			<input type="submit" value="Adicionar">
 		</form>
 	</div>
 </body>
