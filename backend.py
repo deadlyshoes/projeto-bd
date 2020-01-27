@@ -33,6 +33,10 @@ def buscar():
 		nome = request.form["nome"]
 		return render_template("entidades.html")
 	return render_template("busca.html")
+	
+@app.route("/planetas")
+def planetas():
+	return render_template("planetas.html")
 
 if __name__ == "__main__":
 	app.run(threaded=True, port=5000)
