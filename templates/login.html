@@ -1,16 +1,25 @@
 <html>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/login.css') }}">
 
-	<div class="login-box">
-		<form action="" method="post">
-			<label for="username">Usuário</label><br>
-			<input type="text" name="username"
-				value="{{ request.form.username }}"><br>
-			<label for="password">Senha</label><br>
-			<input type="password" name="password"
-				value="{{ request.form.password }}"><br>
-			<input type="submit" value="Login">
-		</form>
+<body>
+	<div class="box">
+		<div class="{{ tipo }}">
+			Usuário ou senha inválidos.
+		</div>
+		<div class="login-box">
+			<form action="" method="post">
+				<label for="username">Usuário</label><br>
+				<input type="text" name="username"
+					value="{{ request.form.username }}"><br>
+				<label for="password">Senha</label><br>
+				<input type="password" name="password"
+					value="{{ request.form.password }}"><br>
+				<input type="submit" value="Login">
+			</form>
+		</div>
 	</div>
-	
+</body>	
+
+<script src="{{ url_for('static', filename='scripts/login.js') }}"></script>
+
 </html>

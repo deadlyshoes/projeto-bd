@@ -3,28 +3,17 @@
 
 <body>
 	<div class="cabecalho">
-		<a href="{{ url_for('buscar') }}"><img src="{{ url_for('static', filename='stylesheets/images/searchicon.png') }}"></a>
+		<select id="tipo" name="Entidade">
+			<option value="galaxia">Galáxias</option>
+			<option value="sistema">Sistemas planetários</option>
+			<option value="planetas">Planetas</option>
+			<option value="satelites">Satélites naturais</option>
+			<option value="estrelas">Estrelas</option>
+		</select>
+		<a href="{{ url_for('adicionar') }}"><button type="button">Adicionar</button></a>
 		<form action="" method="post">
 			<input type="text" name="busca" placeholder="Busca..."
 				value="{{ request.form.busca }}">
-		</form>
-	</div>
-	<br>
-	<div>
-		<form action="galaxias">
-			<button>Galáxias</button>
-		</form>
-		<form action="planetas">
-			<button>Planetas</button>
-		</form>
-		<form action="estrelas">
-			<button>Estrelas</button>
-		</form>
-		<form action="sistemas">
-			<button>Sistemas planetários</button>
-		</form>
-		<form action="satélites">
-			<button>Satélites naturais</button>
 		</form>
 	</div>
 </body>
