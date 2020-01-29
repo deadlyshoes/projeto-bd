@@ -1,4 +1,15 @@
 <html>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/entidades.css') }}">
+
+<body>
+	<div class="cabecalho">
+		<a href="{{ url_for('buscar') }}"><img src="{{ url_for('static', filename='stylesheets/images/searchicon.png') }}"></a>
+		<form action="" method="post">
+			<input type="text" name="busca" placeholder="Busca..."
+				value="{{ request.form.busca }}">
+		</form>
+	</div>
+	<br>
 	<div>
 		<form action="galaxias">
 			<button>Galáxias</button>
@@ -16,4 +27,6 @@
 			<button>Satélites naturais</button>
 		</form>
 	</div>
+</body>
+
 </html>
