@@ -9,8 +9,8 @@
 				value="{{ request.form.busca }}">
 		</form>
 	</div>
-	<div class="notify">
-		Clique nas barras abaixo para consultar as informações de cada planeta.
+	<div class="notificacao">
+		<p>Clique nas barras abaixo para consultar as informações de cada planeta.</p>
 	</div>
 	{% for ind in range(2) %}
 		<a href="{{ url_for('infos', i=ind) }}">

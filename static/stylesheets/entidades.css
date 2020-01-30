@@ -51,10 +51,15 @@ a {
 	font-size: 14px;
 }
 
-.notify {
+.notificacao {
 	width: 100%;
 	padding: 6px 8px;
 	border-bottom: 1px solid #ccc;
+}
+
+.notificacao p {
+    margin: 0;
+    padding: 0;
 	color: #86181d;
 	font-family: sans-serif;
 	font-size: 12px;
