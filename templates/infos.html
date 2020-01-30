@@ -4,12 +4,17 @@
 <body>
 	<div class="cabecalho">
 		<a href="{{ url_for('adicionar') }}"><button type="button">Adicionar</button></a>
+		<a href="{{ url_for('modificar') }}"><button type="button">Modificar</button></a>
 		<form action="" method="post">
 			<input type="text" name="busca" placeholder="Busca..."
 				value="{{ request.form.busca }}">
 		</form>
 	</div>
-	<p>id: {{ iden }}</p>
+	<div class="infos">
+		{% for i in range(5) %}
+			<p>{{ inf[i] }}: {{ sub[i] }}</p>
+		{% endfor %}
+	</div>
 </body>
 
 </html>

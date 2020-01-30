@@ -38,14 +38,26 @@ body {
 	transition: width 0.3s ease-in-out;
 }
 
+a {
+	color: #000000;
+	text-decoration: none;
+}
+
+.mini-cabecalho {
+	width: 100%;
+	padding: 6px 8px;
+	border-bottom: 1px solid #ccc;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
 input[type=text]:focus {
 	width: 35%;
 }
 
-.lista {
-	margin-top: 8px;
-	margin-bottom: 8px;
-	margin-left: 8px;
+.infos {
+	padding: 6px 8px;
 	font-family: sans-serif;
-	font-size: 12px;
+	font-size: 14px;
+	border-bottom: 1px solid #ccc;
 }
