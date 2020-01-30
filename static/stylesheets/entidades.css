@@ -2,38 +2,50 @@ body {
 	margin: 0;
 }
 
+
 .cabecalho {
 	width: 100%;
 	border-bottom: 1px solid #ccc;
 }
 
+.cabecalho form {
+     display: inline;
+     margin: 0px;
+     padding: 0px;
+}
+
 .cabecalho select {
+	margin-left: 8px;
 	font-family: sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .cabecalho button {
+	margin-left: 8px;
 	font-family: sans-serif;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .cabecalho input[type=text] {
 	padding: 6px 8px;
-	/*padding-left: 20px;*/
 	border: 1px solid #ccc;
 	margin-left: 8px;
 	margin-top: 8px;
 	margin-bottom: 8px;
 	font-family: sans-serif;
-	font-size: 16px;
-	/*background-image: url(images/searchicon.png);
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-position: center;*/
+	font-size: 14px;
 	width: 15%;
 	transition: width 0.3s ease-in-out;
 }
 
 input[type=text]:focus {
 	width: 35%;
+}
+
+.lista {
+	margin-top: 8px;
+	margin-bottom: 8px;
+	margin-left: 8px;
+	font-family: sans-serif;
+	font-size: 12px;
 }

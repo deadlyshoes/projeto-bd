@@ -1,8 +1,14 @@
 <html>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/login.css') }}">
+
+<head>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/login.css') }}">
+	<title>Login</title>
+</head>
 
 <body>
 	<div class="box">
+		<h1>CCM</h1>
+		<br><br><br><br>
 		<div class="{{ tipo }}">
 			Usuário ou senha inválidos.
 		</div>
@@ -14,9 +20,13 @@
 				<label for="password">Senha</label><br>
 				<input type="password" name="password"
 					value="{{ request.form.password }}"><br>
-				<input type="submit" value="Login">
+				<input type="submit" value="Entrar">
 			</form>
 		</div>
+		<div class="notify-box">
+			<p>Ainda não tem uma conta? <a href="{{ url_for('registro') }}">Registre-se.</a></p>
+		</div>
+		<br><br><br><br>
 	</div>
 </body>	
 

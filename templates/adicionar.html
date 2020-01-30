@@ -2,16 +2,23 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/login.css') }}">
 
 <body>
-	<div class = login-box>
-		<form action="" method="post">
-			<label for="tipo">Tipo</label><br>
-			<input type="text" name="tipo"
-				value="{{ request.form.tipo }}"><br>
-			<label for="nome">Nome</label><br>
-			<input type="text" name="nome"
-				value="{{ request.form.nome }}">
-			<input type="submit" value="Adicionar">
-		</form>
+	<div class="box">
+		<div class = login-box>
+			<form action="" method="post">
+				<label for="tipo">Tipo</label><br>
+				<select id="tipo" name="Entidade">
+					<option value="galaxia">Galáxias</option>
+					<option value="sistema">Sistemas planetários</option>
+					<option value="planetas">Planetas</option>
+					<option value="satelites">Satélites naturais</option>
+					<option value="estrelas">Estrelas</option>
+				</select><br>
+				<label for="nome">Nome</label><br>
+				<input type="text" name="nome"
+					value="{{ request.form.nome }}">
+				<input type="submit" value="Adicionar">
+			</form>
+		</div>
 	</div>
 </body>
 </html>

@@ -9,11 +9,7 @@
 				value="{{ request.form.busca }}">
 		</form>
 	</div>
-	<div class="lista">
-		{% for ele in lista %}
-			<a href="{{ url_for('infos', i=ele) }}">{{ ele }}</a><br>
-		{% endfor %}
-    </div>
+	<p>id: {{ iden }}</p>
 </body>
 
 </html>
