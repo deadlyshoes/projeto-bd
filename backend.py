@@ -1,10 +1,22 @@
 from flask import Flask, jsonify, render_template, url_for, request, redirect
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/projeto-bd'
+db = SQLAlchemy(app)
+
+class Planeta(db.Model):
+	__tablename__ = 'planeta'
+	id = db.Column('id_planeta', db.Integer, primary_key=True)
+	nome = db.Column('nome', db.Unicode)
 	
+	def __init__(self, id, nome):
+		self.id = id
+		self.nome = nome
+
 lista = [["0", "Terra", "Planeta", "Sistema Solar", "Via Láctea"], ["1", "Marte", "Planeta", "Sistema Solar", "Via Láctea"]]
 lista_info = ["id", "nome", "tipo", "sistema", "galáxia"]
-	
+
 @app.route("/", methods=["GET", "POST"])
 def login():
 	if request.method == "POST":

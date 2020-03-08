@@ -10,12 +10,12 @@
 		<div class = login-box>
 			<form action="" method="post">
 				<label for="tipo">Tipo</label><br>
-				<select id="tipo" name="Entidade">
+				<select id="tipo" name="tipo">
 					<option value="galaxia">Galáxia</option>
 					<option value="sistema">Sistema planetário</option>
-					<option value="planetas">Planeta</option>
-					<option value="satelites">Satélite natural</option>
-					<option value="estrelas">Estrela</option>
+					<option value="planeta">Planeta</option>
+					<option value="satelite">Satélite natural</option>
+					<option value="estrela">Estrela</option>
 				</select><br>
 				<label for="nome">Nome</label><br>
 				<input type="text" name="nome"
@@ -24,7 +24,7 @@
 				<input type="text" name="galaxia"
 					value="{{ request.form.galaxia }}">
 				<label for="sistema">Sistema</label><br>
-				<input type="text" name="Sistema"
+				<input type="text" name="sistema"
 					value="{{ request.form.sistema }}">
 				<input type="submit" value="Adicionar">
 			</form>
