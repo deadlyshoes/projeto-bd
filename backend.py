@@ -2,7 +2,8 @@ from flask import Flask, jsonify, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/projeto-bd'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ilmar:@localhost/projeto-bd'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class Planeta(db.Model):
@@ -41,7 +42,8 @@ def entidades():
 	if request.method == "POST":
 		nome = request.form["busca"]
 		return redirect("entidades")
-	return render_template("entidades.html", lista=lista)
+	planetas = Planeta.query.all()
+	return render_template("entidades.html", lista=planetas)
 
 @app.route("/entidades/infos/<i>", methods=["GET", "POST"])
 def infos(i):
@@ -53,7 +55,10 @@ def infos(i):
 def adicionar():
 	if request.method == "POST":
 		nome = request.form["nome"]
-		#tipo = request.form["tipo"]
+		tipo = request.form["tipo"]
+		if tipo == "planeta":
+			db.session.add(Planeta(1, nome))
+		db.session.commit()
 		return redirect("entidades")
 	return render_template("adicionar.html")
 	
