@@ -15,8 +15,8 @@
 		</form>
 	</div>
 	<div class="infos">
-		{% for i in range(5) %}
-			<p>{{ inf[i] }}: {{ sub[i] }}</p>
+		{% for key in d %}
+			<p>{{ key }}: {{ d[key] }}</p>
 		{% endfor %}
 	</div>
 </body>

@@ -17,10 +17,12 @@
 		<p>Clique nas barras abaixo para consultar as informações de cada planeta.</p>
 	</div>
 	{% for planeta in lista %}
-			<div class="mini-cabecalho">
-				{{ planeta.nome }}<br>
-				#{{ planeta.id }}
-			</div>
+		{% set id = planeta.id %}
+		<a href="{{ url_for('infos', tipo='planeta', i=id) }}">
+		<div class="mini-cabecalho">
+			{{ planeta.nome }}<br>
+			#{{ planeta.id }}
+		</div>
 	{% endfor %}
 </body>
 

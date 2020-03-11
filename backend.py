@@ -11,9 +11,11 @@ class Planeta(db.Model):
 	id = db.Column('id_planeta', db.Integer, primary_key=True)
 	nome = db.Column('nome', db.Unicode)
 	
-	def __init__(self, id, nome):
-		self.id = id
+	def __init__(self, nome):
 		self.nome = nome
+		
+	def infos(self):
+		return {"id": self.id, "Nome": self.nome}
 
 lista = [["0", "Terra", "Planeta", "Sistema Solar", "Via Láctea"], ["1", "Marte", "Planeta", "Sistema Solar", "Via Láctea"]]
 lista_info = ["id", "nome", "tipo", "sistema", "galáxia"]
@@ -45,11 +47,12 @@ def entidades():
 	planetas = Planeta.query.all()
 	return render_template("entidades.html", lista=planetas)
 
-@app.route("/entidades/infos/<i>", methods=["GET", "POST"])
-def infos(i):
-	print(i)
-	iden = lista[int(i)]
-	return render_template("infos.html", sub=lista[int(i)], inf=lista_info)
+@app.route("/entidades/infos/<tipo>_<i>", methods=["GET", "POST"])
+def infos(tipo, i):
+	infos = {}
+	if tipo == "planeta":
+		infos = Planeta.query.get(i).infos()
+	return render_template("infos.html", d=infos)
 
 @app.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
@@ -57,7 +60,7 @@ def adicionar():
 		nome = request.form["nome"]
 		tipo = request.form["tipo"]
 		if tipo == "planeta":
-			db.session.add(Planeta(1, nome))
+			db.session.add(Planeta(nome))
 		db.session.commit()
 		return redirect("entidades")
 	return render_template("adicionar.html")
