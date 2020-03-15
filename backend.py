@@ -21,6 +21,20 @@ class Galaxia(db.Model):
     def infos(self):
         return {"id": self.id, "Nome": self.nome, "Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
 
+class Sistema(db.Model):
+    __tablename__ = 'sistema'
+    id = db.Column('id_sistema', db.Integer, primary_key=True)
+    nome = db.Column('nome', db.Unicode)
+    qt_planetas = db.Column('qt_planetas', db.Integer)
+    qt_estrelas = db.Column('qt_estrelas', db.Integer)
+    idade = db.Column('idade', db.Integer)
+
+    def __init__(self, nome):
+        self.nome = nome
+
+    def infos(self):
+        return {"id": self.id, "Nome": self.nome, "Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
+
 class Estrela(db.Model):
     __tablename__ = 'estrela'
     id = db.Column('id_estrela', db.Integer, primary_key=True)
