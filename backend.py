@@ -52,6 +52,20 @@ class Planeta(db.Model):
 	def infos(self):
         return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta}
 
+class Satelite(db.Model):
+	__tablename__ = 'satelite'
+	id = db.Column('id_satelite', db.Integer, primary_key=True)
+	nome = db.Column('nome', db.Unicode)
+    tamanho = db.Column('tamanho', db.Integer)
+    peso = db.Column('peso', db.Integer)
+    comp_sn = db.Column('comp_sn', db.Unicode)
+	
+	def __init__(self, nome):
+		self.nome = nome
+		
+	def infos(self):
+        return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn}
+
 @app.route("/", methods=["GET", "POST"])
 def login():
 	if request.method == "POST":
