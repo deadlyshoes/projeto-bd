@@ -6,6 +6,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ilmar:@localhost/projeto-b
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+class Galaxia(db.Model):
+    __tablename__ = 'galaxia'
+    id = db.Column('id_galaxia', db.Integer, primary_key=True)
+    nome = db.Column('nome', db.Unicode)
+    qt_sistema = db.Column('qt_sistema', db.Integer)
+    dist_terra = db.Column('dist_terra', db.Integer)
+
+    def __init__(self, nome, qt_sistema, dist_terra):
+        self.nome = nome
+        self.qt_sistema = qt_sistema
+        self.dist_terra = dist_terra
+
+    def infos(self):
+        return {"id": self.id, "Nome": self.nome, "Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
+
 class Planeta(db.Model):
 	__tablename__ = 'planeta'
 	id = db.Column('id_planeta', db.Integer, primary_key=True)
