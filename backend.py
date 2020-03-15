@@ -10,12 +10,17 @@ class Planeta(db.Model):
 	__tablename__ = 'planeta'
 	id = db.Column('id_planeta', db.Integer, primary_key=True)
 	nome = db.Column('nome', db.Unicode)
+    tamanho = db.Column('tamanho', db.Integer)
+    peso = db.Column('peso', db.Integer)
+    vel_rotacao = db.Column('vel_rotacao', db.Integer)
+    possui_sn = db.Column('possui_sn', db.Bool)
+    comp_planeta = db.Column('comp_planeta', db.Unicode)
 	
 	def __init__(self, nome):
 		self.nome = nome
 		
 	def infos(self):
-		return {"id": self.id, "Nome": self.nome}
+        return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta}
 
 lista = [["0", "Terra", "Planeta", "Sistema Solar", "Via Láctea"], ["1", "Marte", "Planeta", "Sistema Solar", "Via Láctea"]]
 lista_info = ["id", "nome", "tipo", "sistema", "galáxia"]
