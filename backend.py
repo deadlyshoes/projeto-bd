@@ -14,7 +14,7 @@ class Galaxia(db.Model):
     dist_terra = db.Column('dist_terra', db.Integer)
 
     def __init__(self, nome, qt_sistema, dist_terra):
-        self.nome = nome
+    self.nome = nome
         self.qt_sistema = qt_sistema
         self.dist_terra = dist_terra
 
@@ -36,9 +36,6 @@ class Planeta(db.Model):
 		
 	def infos(self):
         return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta}
-
-lista = [["0", "Terra", "Planeta", "Sistema Solar", "Via Láctea"], ["1", "Marte", "Planeta", "Sistema Solar", "Via Láctea"]]
-lista_info = ["id", "nome", "tipo", "sistema", "galáxia"]
 
 @app.route("/", methods=["GET", "POST"])
 def login():
