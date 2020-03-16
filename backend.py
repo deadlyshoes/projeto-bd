@@ -46,7 +46,7 @@ class Estrela(db.Model):
 		self.nome = nome
 
 	def infos(self):
-		return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela", self.possui_estrela, "Distância até a terra": self.dist_terra}
+		return {"id": self.id, "Nome": self.nome, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra}
 
 class Planeta(db.Model):
 	__tablename__ = 'planeta'
@@ -120,11 +120,11 @@ def adicionar():
 		
 		if tipo == "galaxia":
 			db.session.add(Galaxia(nome))
-		else if tipo == "sistema":
+		elif tipo == "sistema":
 			db.session.add(Sistema(nome))
-		else if tipo == "estrela":
+		elif tipo == "estrela":
 			db.session.add(Estrela(nome))
-		else if tipo == "planeta":
+		elif tipo == "planeta":
 			db.session.add(Planeta(nome))
 		else:
 			db.session.add(Satelite(nome))
