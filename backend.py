@@ -119,8 +119,18 @@ def adicionar():
 	if request.method == "POST":
 		nome = request.form["nome"]
 		tipo = request.form["tipo"]
-		if tipo == "planeta":
-			db.session.add(Planeta(nome))
+        
+		if tipo == "galaxia":
+			db.session.add(Galaxia(nome))
+        else if tipo == "sistema":
+			db.session.add(Sistema(nome))
+        else if tipo == "estrela":
+            db.session.add(Estrela(nome))
+        else if tipo == "planeta":
+            db.session.add(Planeta(nome))
+        else:
+            db.session.add(Satelite(nome))
+        
 		db.session.commit()
 		return redirect("entidades")
 	return render_template("adicionar.html")
