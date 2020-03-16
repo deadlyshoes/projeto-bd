@@ -11,7 +11,7 @@ class Galaxia(db.Model):
     id = db.Column('id_galaxia', db.Integer, primary_key=True)
     nome = db.Column('nome', db.Unicode)
     qt_sistema = db.Column('qt_sistema', db.Integer)
-    dist_terra = db.Column('dist_terra', db.Integer)
+    dist_terra = db.Column('dist_terra', db.Float)
 
     def __init__(self, nome, qt_sistema, dist_terra):
     self.nome = nome
@@ -39,10 +39,10 @@ class Estrela(db.Model):
     __tablename__ = 'estrela'
     id = db.Column('id_estrela', db.Integer, primary_key=True)
     nome = db.Column('nome', db.Unicode)
-    tamanho = db.Column('tamanho', db.Integer)
+    tamanho = db.Column('tamanho', db.Float)
     idade = db.Column('idade', db.Integer)
-    possui_estrela = db.Column('possui_estrela', db.Bool)
-    dist_terra = db.Column('dist_terra', db.Integer)
+    possui_estrela = db.Column('possui_estrela', db.Boolean)
+    dist_terra = db.Column('dist_terra', db.Float)
 
     def __init__(self, nome):
         self.nome = nome
@@ -54,10 +54,10 @@ class Planeta(db.Model):
 	__tablename__ = 'planeta'
 	id = db.Column('id_planeta', db.Integer, primary_key=True)
 	nome = db.Column('nome', db.Unicode)
-    tamanho = db.Column('tamanho', db.Integer)
-    peso = db.Column('peso', db.Integer)
-    vel_rotacao = db.Column('vel_rotacao', db.Integer)
-    possui_sn = db.Column('possui_sn', db.Bool)
+    tamanho = db.Column('tamanho', db.Float)
+    peso = db.Column('peso', db.Float)
+    vel_rotacao = db.Column('vel_rotacao', db.Float)
+    possui_sn = db.Column('possui_sn', db.Boolean)
     comp_planeta = db.Column('comp_planeta', db.Unicode)
 	
 	def __init__(self, nome):
@@ -70,8 +70,8 @@ class Satelite(db.Model):
 	__tablename__ = 'satelite'
 	id = db.Column('id_satelite', db.Integer, primary_key=True)
 	nome = db.Column('nome', db.Unicode)
-    tamanho = db.Column('tamanho', db.Integer)
-    peso = db.Column('peso', db.Integer)
+    tamanho = db.Column('tamanho', db.Float)
+    peso = db.Column('peso', db.Float)
     comp_sn = db.Column('comp_sn', db.Unicode)
 	
 	def __init__(self, nome):
