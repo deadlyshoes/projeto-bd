@@ -14,9 +14,7 @@ class Galaxia(db.Model):
     dist_terra = db.Column('dist_terra', db.Float)
 
     def __init__(self, nome, qt_sistema, dist_terra):
-    self.nome = nome
-        self.qt_sistema = qt_sistema
-        self.dist_terra = dist_terra
+        self.nome = nome
 
     def infos(self):
         return {"id": self.id, "Nome": self.nome, "Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
