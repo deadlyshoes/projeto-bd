@@ -148,7 +148,7 @@ def entidades():
             qt_sistema = request.form["qt_sistema"]
             dist_terra = request.form["dist_terra"]
             
-            db.session.add(Galaxia(nome))
+            db.session.add(Galaxia(nome, qt_sistema, dist_terra))
         else:
             tamanho = request.form["tamanho"]
             peso = request.form["peso"]
@@ -157,7 +157,6 @@ def entidades():
             db.session.add(Satelite(nome))
         
         db.session.commit()
-        return "done"
     return render_template("entidades.html")
 
 @app.route("/entidades/get_entidades", methods=["GET"])
