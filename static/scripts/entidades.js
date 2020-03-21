@@ -1,4 +1,7 @@
 async function print_infos(id) {
+    let mini_header = document.getElementById(id);
+    mini_header.onclick = null;
+    
     data = id;
     console.log(data)
     var options = {
@@ -16,17 +19,25 @@ async function print_infos(id) {
         console.log(infos)
         
         let div = document.createElement("div");
-        div.className = "infos";
+        div.id = "infos-" + id;
         
-        for (var key in infos) {
+        for (const [key, value] of Object.entries(infos)) {
             let p = document.createElement("p");
-            p.innerHTML = key.concat(": ".concat(infos[key]));
+            p.innerHTML = key.concat(": ".concat(value));
             
             div.appendChild(p);
         }
         
-        document.body.appendChild(div);
+        mini_header.appendChild(div);
+        mini_header.onclick = function() {hide_infos(this.id);};
     }
+}
+
+async function hide_infos(id) {
+    let mini_header = document.getElementById(id);
+    let infos = document.getElementById("infos-" + id);
+    mini_header.removeChild(infos);
+    mini_header.onclick = function() {print_infos(this.id);};
 }
 
 async function get_entidades() {
