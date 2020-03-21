@@ -3,7 +3,7 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='stylesheets/entidades.css') }}">
-    <link rel="script" type="text/javascript" href="{{ url_for('static', filename='scripts/entidades.js') }}">
+    <script src="{{ url_for('static', filename='scripts/entidades.js') }}"></script>
 </head>
 
 <body>
@@ -17,14 +17,6 @@
 	<div class="notificacao">
 		<p>Clique nas barras abaixo para consultar as informações de cada planeta.</p>
 	</div>
-	{% for planeta in lista %}
-		{% set id = planeta.id %}
-		<a href="{{ url_for('infos', tipo='planeta', i=id) }}">
-		<div class="mini-cabecalho">
-			{{ planeta.nome }}<br>
-			#{{ planeta.id }}
-		</div>
-	{% endfor %}
 </body>
 
 </html>

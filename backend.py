@@ -102,15 +102,30 @@ def entidades():
 	if request.method == "POST":
 		nome = request.form["busca"]
 		return redirect("entidades")
-	planetas = Planeta.query.all()
-	return render_template("entidades.html", lista=planetas)
+	return render_template("entidades.html")
 
-@app.route("/entidades/infos/<tipo>_<i>", methods=["GET", "POST"])
-def infos(tipo, i):
-	infos = {}
-	if tipo == "planeta":
-		infos = Planeta.query.get(i).infos()
-	return render_template("infos.html", d=infos)
+@app.route("/entidades/get_entidades", methods=["GET"])
+def get_entidades():
+	if request.method == "GET":
+		lista = []
+		planetas = Planeta.query.all()
+		for planeta in planetas:
+			lista.append(planeta.infos())
+		return jsonify(lista)
+
+@app.route("/entidades/get_infos", methods=["POST"])
+def get_infos():
+	if request.method == "POST":
+		req_id = request.get_json()
+		i = 0
+		while (not req_id[i].isdigit()):
+			i += 1
+		tipo = req_id[0: i]
+		
+		infos = {}
+		if tipo == "planeta":
+			infos = Planeta.query.get(req_id).infos()
+		return jsonify(infos)
 
 @app.route("/adicionar", methods=["GET", "POST"])
 def adicionar():
