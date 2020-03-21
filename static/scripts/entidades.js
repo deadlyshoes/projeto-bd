@@ -75,6 +75,104 @@ async function get_entidades() {
     }
 }
 
+function atualizar_campos() {
+    let tipo = document.getElementById("tipo").value;
+    
+    let nome = document.getElementById("nome");
+    let qt_estrelas = document.getElementById("qt_estrelas");
+    let qt_planetas = document.getElementById("qt_planetas");
+    let qt_sistema = document.getElementById("qt_sistema");
+    let dist_terra = document.getElementById("dist_terra");
+    let idade = document.getElementById("idade");
+    let tamanho = document.getElementById("tamanho");
+    let peso = document.getElementById("peso");
+    let comp_planeta = document.getElementById("comp_planeta");
+    let comp_sn = document.getElementById("comp_sn");
+    let possui_sn = document.getElementById("possui_sn");
+    let vel_rotacao = document.getElementById("vel_rotacao");
+    let possui_estrela = document.getElementById("possui_estrela");
+    
+    switch (tipo) {
+        case "galaxia":
+            nome.style.display = "block";
+            qt_estrelas.style.display = "none";
+            qt_planetas.style.display = "none";
+            qt_sistema.style.display = "block";
+            dist_terra.style.display = "block";
+            idade.style.display = "none";
+            tamanho.style.display = "none";
+            peso.style.display = "none";
+            comp_planeta.style.display = "none";
+            comp_sn.style.display = "none";
+            possui_sn.style.display = "none";
+            vel_rotacao.style.display = "none";
+            possui_estrela.style.display = "none";
+            break;
+        case "estrela":
+            nome.style.display = "block";
+            qt_estrelas.style.display = "none";
+            qt_planetas.style.display = "none";
+            qt_sistema.style.display = "none";
+            dist_terra.style.display = "block";
+            idade.style.display = "block";
+            tamanho.style.display = "block";
+            peso.style.display = "none";
+            comp_planeta.style.display = "none";
+            comp_sn.style.display = "none";
+            possui_sn.style.display = "none";
+            vel_rotacao.style.display = "none";
+            possui_estrela.style.display = "block";
+            break;
+        case "sistema":
+            nome.style.display = "block";
+            qt_estrelas.style.display = "block";
+            qt_planetas.style.display = "block";
+            qt_sistema.style.display = "none";
+            dist_terra.style.display = "none";
+            idade.style.display = "block";
+            tamanho.style.display = "none";
+            peso.style.display = "none";
+            comp_planeta.style.display = "none";
+            comp_sn.style.display = "none";
+            possui_sn.style.display = "none";
+            vel_rotacao.style.display = "none";
+            possui_estrela.style.display = "none";
+            break;
+        case "planeta":
+            nome.style.display = "block";
+            qt_estrelas.style.display = "none";
+            qt_planetas.style.display = "none";
+            qt_sistema.style.display = "none";
+            dist_terra.style.display = "none";
+            idade.style.display = "none";
+            tamanho.style.display = "block";
+            peso.style.display = "block";
+            comp_planeta.style.display = "block";
+            comp_sn.style.display = "none";
+            possui_sn.style.display = "block";
+            vel_rotacao.style.display = "block";
+            possui_estrela.style.display = "none";
+            break;
+        case "satelite":
+            nome.style.display = "block";
+            qt_estrelas.style.display = "none";
+            qt_planetas.style.display = "none";
+            qt_sistema.style.display = "none";
+            dist_terra.style.display = "none";
+            idade.style.display = "none";
+            tamanho.style.display = "block";
+            peso.style.display = "block";
+            comp_planeta.style.display = "none";
+            comp_sn.style.display = "block";
+            possui_sn.style.display = "none";
+            vel_rotacao.style.display = "none";
+            possui_estrela.style.display = "none";
+            break;
+        default:
+            break;
+    }
+}
+
 function action_adicionar() {
     document.getElementById("add-popup").style.display = "block";
 }

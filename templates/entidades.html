@@ -22,7 +22,7 @@
             <span class="close" onclick="hide_adicionar()">&times;</span>
             <form action="" method="post">
                 <label for="tipo">Tipo</label><br>
-                <select id="tipo" name="tipo">
+                <select id="tipo" name="tipo" onchange="atualizar_campos()">
                     <option value="galaxia">Galáxia</option>
                     <option value="sistema">Sistema planetário</option>
                     <option value="planeta">Planeta</option>
