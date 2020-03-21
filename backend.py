@@ -132,12 +132,28 @@ def entidades():
             
             db.session.add(Planeta(nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao))
         elif tipo == "sistema":
+            qt_estrelas = request.form["tamanho"]
+            qt_planetas = request.form["qt_planeatas"]
+            idade = request.form["idade"]
+            
             db.session.add(Sistema(nome))
         elif tipo == "estrela":
+            tamanho = request.form["tamanho"]
+            idade = request.form["idade"]
+            possui_estrela = request.form["possui_estrela"]
+            dist_terra = request.form["dist_terra"]
+            
             db.session.add(Estrela(nome))
         elif tipo == "galaxia":
+            qt_sistema = request.form["qt_sistema"]
+            dist_terra = request.form["dist_terra"]
+            
             db.session.add(Galaxia(nome))
         else:
+            tamanho = request.form["tamanho"]
+            peso = request.form["peso"]
+            comp_sn = request.form["comp_sn"]
+            
             db.session.add(Satelite(nome))
         
         db.session.commit()
