@@ -67,8 +67,13 @@ class Planeta(db.Model):
     possui_sn = db.Column('possui_sn', db.Boolean)
     comp_planeta = db.Column('comp_planeta', db.Unicode)
     
-    def __init__(self, nome):
+    def __init__(self, nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao):
         self.nome = nome
+        self.tamanho = tamanho
+        self.peso = peso
+        self.comp_planeta = comp_planeta
+        self.possui_sn = True
+        self.vel_rotacao = vel_rotacao
         
     def header_infos(self):
         return {"id": self.id, "Nome": self.nome}
@@ -115,8 +120,44 @@ def registro():
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():
     if request.method == "POST":
-        nome = request.form["busca"]
-        return redirect("entidades")
+        nome = request.form["nome"]
+        tipo = request.form["tipo"]
+        
+        if tipo == "planeta":
+            tamanho = request.form["tamanho"]
+            peso = request.form["peso"]
+            comp_planeta = request.form["comp_planeta"]
+            possui_sn = request.form["possui_sn"]
+            vel_rotacao = request.form["vel_rotacao"]
+            
+            db.session.add(Planeta(nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao))
+        elif tipo == "sistema":
+            qt_estrelas = request.form["tamanho"]
+            qt_planetas = request.form["qt_planeatas"]
+            idade = request.form["idade"]
+            
+            db.session.add(Sistema(nome))
+        elif tipo == "estrela":
+            tamanho = request.form["tamanho"]
+            idade = request.form["idade"]
+            possui_estrela = request.form["possui_estrela"]
+            dist_terra = request.form["dist_terra"]
+            
+            db.session.add(Estrela(nome))
+        elif tipo == "galaxia":
+            qt_sistema = request.form["qt_sistema"]
+            dist_terra = request.form["dist_terra"]
+            
+            db.session.add(Galaxia(nome))
+        else:
+            tamanho = request.form["tamanho"]
+            peso = request.form["peso"]
+            comp_sn = request.form["comp_sn"]
+            
+            db.session.add(Satelite(nome))
+        
+        db.session.commit()
+        return "done"
     return render_template("entidades.html")
 
 @app.route("/entidades/get_entidades", methods=["GET"])
@@ -141,27 +182,6 @@ def get_infos():
         if tipo == "planeta":
             infos = Planeta.query.get(req_id).infos()
         return jsonify(infos)
-
-@app.route("/adicionar", methods=["GET", "POST"])
-def adicionar():
-    if request.method == "POST":
-        nome = request.form["nome"]
-        tipo = request.form["tipo"]
-        
-        if tipo == "galaxia":
-            db.session.add(Galaxia(nome))
-        elif tipo == "sistema":
-            db.session.add(Sistema(nome))
-        elif tipo == "estrela":
-            db.session.add(Estrela(nome))
-        elif tipo == "planeta":
-            db.session.add(Planeta(nome))
-        else:
-            db.session.add(Satelite(nome))
-        
-        db.session.commit()
-        return redirect("entidades")
-    return render_template("adicionar.html")
     
 @app.route("/modificar", methods=["GET", "POST"])
 def modificar():
