@@ -181,4 +181,8 @@ function hide_adicionar() {
     document.getElementById("add-popup").style.display = "none";
 }
 
+window.onload = function() {
+    atualizar_campos();
+}
+
 get_entidades();
