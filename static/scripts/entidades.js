@@ -75,4 +75,12 @@ async function get_entidades() {
     }
 }
 
+function action_adicionar() {
+    document.getElementById("add-popup").style.display = "block";
+}
+
+function hide_adicionar() {
+    document.getElementById("add-popup").style.display = "none";
+}
+
 get_entidades();
