@@ -56,6 +56,12 @@ class Sistema(db.Model):
         return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
 
 
+orbitar = db.Table('orbitar',
+        db.Column('satelite_id', db.Integer, db.ForeignKey('satelite.id_satelite'), primary_key=True),
+        db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True),
+        db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
+
+
 class Estrela(db.Model):
     __tablename__ = 'estrela'
     id = db.Column('id_estrela', db.Integer, primary_key=True)
@@ -64,6 +70,9 @@ class Estrela(db.Model):
     idade = db.Column('idade', db.Integer)
     possui_estrela = db.Column('possui_estrela', db.Boolean)
     dist_terra = db.Column('dist_terra', db.Float)
+
+    planetas = db.relationship('Planeta', secondary=orbitar)
+    satelites = db.relationship('Satelite', secondary=orbitar)
 
     def __init__(self, nome):
         self.nome = nome
@@ -85,6 +94,8 @@ class Planeta(db.Model):
     possui_sn = db.Column('possui_sn', db.Boolean)
     comp_planeta = db.Column('comp_planeta', db.Unicode)
     
+    satelites = db.relationship('Satelite', secondary=orbitar)
+
     def __init__(self, nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao):
         self.nome = nome
         self.tamanho = tamanho
