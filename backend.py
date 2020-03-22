@@ -168,7 +168,7 @@ def entidades():
             qt_sistema = request.form["qt_sistema"]
             dist_terra = request.form["dist_terra"]
             
-            db.session.add(Galaxia(nome))
+            db.session.add(Galaxia(nome, qt_sistema, dist_terra))
         else:
             tamanho = request.form["tamanho"]
             peso = request.form["peso"]
@@ -177,7 +177,6 @@ def entidades():
             db.session.add(Satelite(nome))
         
         db.session.commit()
-        return "done"
     return render_template("entidades.html")
 
 @app.route("/entidades/get_entidades", methods=["GET"])
@@ -197,12 +196,38 @@ def get_infos():
         while (not req_id[i].isdigit()):
             i += 1
         tipo = req_id[0: i]
-        
+
         infos = {}
         if tipo == "planeta":
             infos = Planeta.query.get(req_id).infos()
         return jsonify(infos)
     
+@app.route("/entidade/remove_entidade", methods=["POST"])
+def remover_entidade():
+    print("aqui")
+    if request.method == "POST":
+        req_id = request.get_json()
+        i = 0
+        while (not req_id[i].isdigit()):
+            i += 1
+        tipo = req_id[0: i]
+        
+        print(type(req_id))
+        
+        if tipo == "planeta":
+            Planeta.query.filter_by(id = req_id).delete()
+        elif tipo == "galaxia":
+            Galaxia.query.filter_by(id = req_id).delete()
+        elif tipo == "sistema":
+            Sistema.query.filter_by(id = req_id).delete()
+        elif tipo == "satelite":
+            Satelite.query.filter_by(id = req_id).delete()
+        elif tipo == "estrela":
+            Estrela.query.filter_by(id = req_id).delete()
+        db.session.commit()
+        
+        return '', 204
+
 @app.route("/modificar", methods=["GET", "POST"])
 def modificar():
     if request.method == "POST":
