@@ -34,12 +34,12 @@ class Galaxia(db.Model):
 
 
 sistema_estrela = db.Table('sistema_estrela',
-            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
-            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True),
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True),
             db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
 sistema_planeta = db.Table('sistema_planeta',
-            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
-            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True),
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True),
             db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True))
 
 
@@ -176,8 +176,8 @@ class Satelite(db.Model):
 
 class GiganteVermelha(db.Model):
     __tablename__ = 'gigante_vermelha'
-    estrela_id = db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id'), nullable=False)
-    morte = dbColumn('morte', db.Boolean, nullable=False)
+    estrela_id = db.Column('estrela', db.Integer, db.ForeignKey('id_estrela'), primary_key=True, nullable=False)
+    morte = db.Column('morte', db.Boolean, nullable=False)
 
     def __init__(self):
         self.morte = False
