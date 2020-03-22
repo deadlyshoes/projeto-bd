@@ -2,7 +2,7 @@ async function print_infos(id) {
     let mini_header = document.getElementById(id);
     mini_header.onclick = null;
     
-    data = id;
+    let data = id;
     console.log(data)
     var options = {
         method: "POST",
@@ -33,11 +33,31 @@ async function print_infos(id) {
     }
 }
 
-async function hide_infos(id) {
+function hide_infos(id) {
     let mini_header = document.getElementById(id);
     let infos = document.getElementById("infos-" + id);
     mini_header.removeChild(infos);
     mini_header.onclick = function() {print_infos(this.id);};
+}
+
+async function remover_entidade(id) {
+    console.log("aqui");
+    
+    let div = document.getElementById(id);
+    div.parentNode.removeChild(div);
+    
+    console.log(id);
+    
+    let data = id;
+    let options = {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(data)
+    };
+    
+    let response = await fetch("/entidade/remove_entidade", options);
 }
 
 async function get_entidades() {
@@ -54,19 +74,33 @@ async function get_entidades() {
             
             let div = document.createElement("div");
             div.className = "mini-cabecalho";
+            div.style.cursor = "pointer";
             div.id = obj["id"];
             div.onclick = function() {print_infos(this.id);};
-            div.style.cursor = "pointer";
         
+            let div_esq = document.createElement("div");
+            div_esq.className = "canto-esq";
+            let div_dir = document.createElement("div");
+            div_dir.className = "canto-dir";
+            
             let nome = document.createElement("span"); 
             nome.innerHTML = "Nome: ".concat(obj["Nome"]);
-            div.appendChild(nome);
+            div_esq.appendChild(nome);
             
-            div.appendChild(document.createElement("br"));
+            div_esq.appendChild(document.createElement("br"));
             
             let id = document.createElement("span");
             id.innerHTML = "#".concat(obj["id"]);
-            div.appendChild(id);
+            div_esq.appendChild(id);
+    
+            let remover = document.createElement("span");
+            remover.className = "close canto-dir";
+            remover.innerHTML = "&times";
+            remover.onclick = function() {remover_entidade(obj["id"])};
+            div_dir.appendChild(remover);
+    
+            div.appendChild(div_esq);
+            div.appendChild(div_dir);
     
             parentDiv.appendChild(div);
         }
