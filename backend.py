@@ -6,12 +6,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ilmar:@localhost/projeto-b
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 class Galaxia(db.Model):
     __tablename__ = 'galaxia'
     id = db.Column('id_galaxia', db.Integer, primary_key=True)
     nome = db.Column('nome', db.Unicode)
     qt_sistema = db.Column('qt_sistema', db.Integer)
     dist_terra = db.Column('dist_terra', db.Float)
+
+    sistemas = db.relationship('Sistema', backref='galaxia')
 
     def __init__(self, nome, qt_sistema, dist_terra):
         self.nome = nome
@@ -29,6 +32,17 @@ class Galaxia(db.Model):
                            {"qt_sistema": self.qt_sistema}, 
                            {"dist_terra": self.qt_sistema}]}
 
+
+sistema_estrela = db.Table('sistema_estrela',
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
+            db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
+sistema_planeta = db.Table('sistema_planeta',
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
+            db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True))
+
+
 class Sistema(db.Model):
     __tablename__ = 'sistema'
     id = db.Column('id_sistema', db.Integer, primary_key=True)
@@ -36,7 +50,11 @@ class Sistema(db.Model):
     qt_planetas = db.Column('qt_planetas', db.Integer)
     qt_estrelas = db.Column('qt_estrelas', db.Integer)
     idade = db.Column('idade', db.Integer)
+    galaxia_id = db.Column('galaxia', db.Integer, db.ForeignKey('galaxia.id_galaxia'), nullable=False, primary_key=True)
 
+    estrelas = db.relationship('Estrela', secondary=sistema_estrela)
+    planetas = db.relationship('Planeta', secondary=sistema_planeta)
+    
     def __init__(self, nome):
         self.nome = nome
 
@@ -54,6 +72,13 @@ class Sistema(db.Model):
                            {"qt_estrelas": self.qt_estrelas},   
                            {"idade": self.idade}]}
 
+
+orbitar = db.Table('orbitar',
+        db.Column('satelite_id', db.Integer, db.ForeignKey('satelite.id_satelite'), primary_key=True),
+        db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True),
+        db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
+
+
 class Estrela(db.Model):
     __tablename__ = 'estrela'
     id = db.Column('id_estrela', db.Integer, primary_key=True)
@@ -62,7 +87,12 @@ class Estrela(db.Model):
     idade = db.Column('idade', db.Integer)
     possui_estrela = db.Column('possui_estrela', db.Boolean)
     dist_terra = db.Column('dist_terra', db.Float)
+    tipo = db.Column('tipo', db.Enum('Anã Branca', 'Anã Vermelha', 'Estrela Binária', 'Gigante Azul', 'Gigante Vermelha'), nullable=False)
 
+    planetas = db.relationship('Planeta', secondary=orbitar)
+    satelites = db.relationship('Satelite', secondary=orbitar)
+    gigante_vermelha = db.relationship('GiganteVermelha', uselist=False)
+    
     def __init__(self, nome):
         self.nome = nome
 
@@ -81,6 +111,7 @@ class Estrela(db.Model):
                            {"Possui estrela": self.possui_estrela},
                            {"dist_terra": self.dist_terra}]}
 
+
 class Planeta(db.Model):
     __tablename__ = 'planeta'
     id = db.Column('id_planeta', db.Integer, primary_key=True)
@@ -91,6 +122,8 @@ class Planeta(db.Model):
     possui_sn = db.Column('possui_sn', db.Boolean)
     comp_planeta = db.Column('comp_planeta', db.Unicode)
     
+    satelites = db.relationship('Satelite', secondary=orbitar)
+
     def __init__(self, nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao):
         self.nome = nome
         self.tamanho = tamanho
@@ -115,6 +148,7 @@ class Planeta(db.Model):
                            {"possui_sn": self.possui_sn},
                            {"comp_planeta": self.comp_planeta}]}
 
+
 class Satelite(db.Model):
     __tablename__ = 'satelite'
     id = db.Column('id_satelite', db.Integer, primary_key=True)
@@ -122,7 +156,7 @@ class Satelite(db.Model):
     tamanho = db.Column('tamanho', db.Float)
     peso = db.Column('peso', db.Float)
     comp_sn = db.Column('comp_sn', db.Unicode)
-    
+
     def __init__(self, nome):
         self.nome = nome
         
@@ -139,6 +173,14 @@ class Satelite(db.Model):
                            {"infos": {"Tamanho": self.tamanho}, "tipo": "float", "valor": "tamanho"},
                            {"infos": {"Peso": self.peso}, "tipo": "float", "valor": "peso"},
                            {"infos": {"Composição": self.comp_sn}, "tipo": "string", "valor": "comp_sn"}]}
+
+class GiganteVermelha(db.Model):
+    __tablename__ = 'gigante_vermelha'
+    estrela_id = db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id'), nullable=False)
+    morte = dbColumn('morte', db.Boolean, nullable=False)
+
+    def __init__(self):
+        self.morte = False
 
 @app.route("/", methods=["GET", "POST"])
 def login():
