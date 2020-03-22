@@ -6,12 +6,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ilmar:@localhost/projeto-b
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 class Galaxia(db.Model):
     __tablename__ = 'galaxia'
     id = db.Column('id_galaxia', db.Integer, primary_key=True)
     nome = db.Column('nome', db.Unicode)
     qt_sistema = db.Column('qt_sistema', db.Integer)
     dist_terra = db.Column('dist_terra', db.Float)
+
+    sistemas = db.relationship('Sistema', backref='galaxia')
 
     def __init__(self, nome, qt_sistema, dist_terra):
         self.nome = nome
@@ -22,6 +25,15 @@ class Galaxia(db.Model):
     def infos(self):
         return {"Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
 
+
+sistema_estrela = db.Table('sistema_estrela',
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
+sistema_planeta = db.Table('sistema_planeta',
+            db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True))
+
+
 class Sistema(db.Model):
     __tablename__ = 'sistema'
     id = db.Column('id_sistema', db.Integer, primary_key=True)
@@ -29,7 +41,11 @@ class Sistema(db.Model):
     qt_planetas = db.Column('qt_planetas', db.Integer)
     qt_estrelas = db.Column('qt_estrelas', db.Integer)
     idade = db.Column('idade', db.Integer)
+    galaxia_id = db.Column('galaxia', db.Integer, db.ForeignKey('galaxia.id_galaxia'), nullable=False)
 
+    estrelas = db.relationship('Estrela', secondary=sistema_estrela)
+    planetas = db.relationship('Planeta', secondary=sistema_planeta)
+    
     def __init__(self, nome):
         self.nome = nome
 
@@ -38,6 +54,7 @@ class Sistema(db.Model):
 
     def infos(self):
         return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
+
 
 class Estrela(db.Model):
     __tablename__ = 'estrela'
@@ -56,6 +73,7 @@ class Estrela(db.Model):
 
     def infos(self):
         return {"Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra}
+
 
 class Planeta(db.Model):
     __tablename__ = 'planeta'
@@ -81,6 +99,7 @@ class Planeta(db.Model):
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta}
 
+
 class Satelite(db.Model):
     __tablename__ = 'satelite'
     id = db.Column('id_satelite', db.Integer, primary_key=True)
@@ -88,7 +107,7 @@ class Satelite(db.Model):
     tamanho = db.Column('tamanho', db.Float)
     peso = db.Column('peso', db.Float)
     comp_sn = db.Column('comp_sn', db.Unicode)
-    
+
     def __init__(self, nome):
         self.nome = nome
         
@@ -97,6 +116,7 @@ class Satelite(db.Model):
         
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn}
+
 
 @app.route("/", methods=["GET", "POST"])
 def login():
