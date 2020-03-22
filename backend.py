@@ -28,9 +28,11 @@ class Galaxia(db.Model):
 
 sistema_estrela = db.Table('sistema_estrela',
             db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
             db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela'), primary_key=True))
 sistema_planeta = db.Table('sistema_planeta',
             db.Column('sistema_id', db.Integer, db.ForeignKey('sistema.id_sistema'), primary_key=True)
+            db.Column('galaxia_id', db.Integer, db.ForeignKey('sistema.galaxia'), primary_key=True)
             db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta'), primary_key=True))
 
 
@@ -41,7 +43,7 @@ class Sistema(db.Model):
     qt_planetas = db.Column('qt_planetas', db.Integer)
     qt_estrelas = db.Column('qt_estrelas', db.Integer)
     idade = db.Column('idade', db.Integer)
-    galaxia_id = db.Column('galaxia', db.Integer, db.ForeignKey('galaxia.id_galaxia'), nullable=False)
+    galaxia_id = db.Column('galaxia', db.Integer, db.ForeignKey('galaxia.id_galaxia'), nullable=False, primary_key=True)
 
     estrelas = db.relationship('Estrela', secondary=sistema_estrela)
     planetas = db.relationship('Planeta', secondary=sistema_planeta)
@@ -70,10 +72,12 @@ class Estrela(db.Model):
     idade = db.Column('idade', db.Integer)
     possui_estrela = db.Column('possui_estrela', db.Boolean)
     dist_terra = db.Column('dist_terra', db.Float)
+    tipo = db.Column('tipo', db.Enum('Anã Branca', 'Anã Vermelha', 'Estrela Binária', 'Gigante Azul', 'Gigante Vermelha'), nullable=False)
 
     planetas = db.relationship('Planeta', secondary=orbitar)
     satelites = db.relationship('Satelite', secondary=orbitar)
-
+    gigante_vermelha = db.relationship('GiganteVermelha', uselist=False)
+    
     def __init__(self, nome):
         self.nome = nome
 
@@ -127,6 +131,15 @@ class Satelite(db.Model):
         
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn}
+
+
+class GiganteVermelha(db.Model):
+    __tablename__ = 'gigante_vermelha'
+    estrela_id = db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id'), nullable=False)
+    morte = dbColumn('morte', db.Boolean, nullable=False)
+
+    def __init__(self):
+        self.morte = False
 
 
 @app.route("/", methods=["GET", "POST"])
