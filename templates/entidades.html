@@ -8,7 +8,7 @@
 
 <body>
 	<div class="cabecalho">
-		<button type="button" onclick="action_adicionar()">Adicionar</button>
+		<button type="button" onclick="criar_form()">Adicionar</button>
 		<form action="" method="post">
 			<input type="text" name="busca" placeholder="Busca..."
 				value="{{ request.form.busca }}">
@@ -17,87 +17,6 @@
 	<div class="notificacao">
 		<p>Clique nas barras abaixo para consultar as informações de cada planeta.</p>
 	</div>
-    <div id="add-popup" class="add-popup">
-        <div class="add-popup-content">
-            <span class="close" onclick="hide_adicionar()">&times;</span>
-            <form action="" method="post">
-                <label for="tipo">Tipo</label><br>
-                <select id="tipo" name="tipo" onchange="atualizar_campos()">
-                    <option value="galaxia">Galáxia</option>
-                    <option value="sistema">Sistema planetário</option>
-                    <option value="planeta">Planeta</option>
-                    <option value="satelite">Satélite natural</option>
-                    <option value="estrela">Estrela</option>
-                </select><br>
-                <div id="nome">
-                    <label for="nome">Nome</label><br>
-                    <input type="text" name="nome"
-                        value="{{ request.form.nome }}">
-                </div>
-                <div id="qt_estrelas">
-                    <label for="qt_estrelas">Quantidade de estrelas</label><br>
-                    <input type="text" name="qt_estrelas"
-                        value="{{ request.form.qt_estrelas }}">
-                </div>
-                <div id="qt_planetas">
-                    <label for="qt_planetas">Quantidade de planetas</label><br>
-                    <input type="text" name="qt_planetas"
-                        value="{{ request.form.qt_planetas }}">
-                </div>
-                <div id="qt_sistema">
-                    <label for="qt_sistema">Quantidade de sistemas</label><br>
-                    <input type="text" name="qt_sistema"
-                        value="{{ request.form.qt_sistema }}">
-                </div>
-                <div id="dist_terra">
-                    <label for="dist_terra">Distância até a Terra</label><br>
-                    <input type="text" name="dist_terra"
-                        value="{{ request.form.dist_terra }}">
-                </div>
-                <div id="idade">
-                    <label for="idade">Idade</label><br>
-                    <input type="text" name="idade"
-                        value="{{ request.form.idade }}">
-                </div>
-                <div id="tamanho">
-                    <label for="tamanho">Tamanho</label><br>
-                    <input type="text" name="tamanho"
-                        value="{{ request.form.tamanho }}">
-                </div>
-                <div id="peso">
-                    <label for="peso">Peso</label><br>
-                    <input type="text" name="peso"
-                        value="{{ request.form.peso }}">
-                </div>
-                <div id="comp_planeta">
-                    <label for="comp_planeta">Composição do planeta</label><br>
-                    <input type="text" name="comp_planeta"
-                        value="{{ request.form.comp_planeta }}">
-                </div>
-                <div id="comp_sn">
-                    <label for="comp_sn">Composição do satélite natural</label><br>
-                    <input type="text" name="comp_sn"
-                        value="{{ request.form.comp_sn }}">
-                </div>
-                <div id="possui_sn">
-                    <label for="possui_sn">Possui satélite natural?</label><br>
-                    <input type="text" name="possui_sn"
-                        value="{{ request.form.possui_sn }}">
-                </div>
-                <div id="vel_rotacao">
-                    <label for="vel_rotacao">Velocidade de rotação</label><br>
-                    <input type="text" name="vel_rotacao"
-                        value="{{ request.form.vel_rotacao }}">
-                </div>
-                <div id="possui_estrela">
-                <label for="possui_estrela">Possui estrela?</label><br>
-                <input type="text" name="possui_estrela"
-                    value="{{ request.form.possui_estrela }}">
-                </div>
-                <input type="submit" value="Adicionar">
-            </form>
-        </div>
-    </div>
 </body>
 
 </html>

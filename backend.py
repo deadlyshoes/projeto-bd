@@ -21,6 +21,13 @@ class Galaxia(db.Model):
 
     def infos(self):
         return {"Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
+        
+    def infos_tipos(self):
+        return {"tam": 3, 
+                "tipo": "galaxia",
+                "atribs": [{"nome": self.nome},
+                           {"qt_sistema": self.qt_sistema}, 
+                           {"dist_terra": self.qt_sistema}]}
 
 class Sistema(db.Model):
     __tablename__ = 'sistema'
@@ -38,6 +45,14 @@ class Sistema(db.Model):
 
     def infos(self):
         return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
+        
+    def infos_tipos(self):
+        return {"tam": 4,
+                "tipo": "sistema",
+                "atribs": [{"nome": self.nome},
+                           {"qt_planetas": self.qt_planetas},
+                           {"qt_estrelas": self.qt_estrelas},   
+                           {"idade": self.idade}]}
 
 class Estrela(db.Model):
     __tablename__ = 'estrela'
@@ -56,6 +71,15 @@ class Estrela(db.Model):
 
     def infos(self):
         return {"Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra}
+        
+    def infos_tipos(self):
+        return {"tam": 5,
+                "tipo": "estrela",
+                "atribs": [{"nome": self.nome},
+                           {"tamanho": self.tamanho},
+                           {"idade": self.idade},
+                           {"Possui estrela": self.possui_estrela},
+                           {"dist_terra": self.dist_terra}]}
 
 class Planeta(db.Model):
     __tablename__ = 'planeta'
@@ -80,6 +104,16 @@ class Planeta(db.Model):
         
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta}
+        
+    def infos_tipos(self):
+        return {"tam": 6,
+                "tipo": "planeta",
+                "atribs": [{"nome": self.nome},
+                           {"tamanho": self.tamanho},
+                           {"peso": self.peso},
+                           {"vel_rotacao": self.vel_rotacao},
+                           {"possui_sn": self.possui_sn},
+                           {"comp_planeta": self.comp_planeta}]}
 
 class Satelite(db.Model):
     __tablename__ = 'satelite'
@@ -97,6 +131,14 @@ class Satelite(db.Model):
         
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn}
+
+    def infos_tipos(self):
+        return {"tam": 4,
+                "tipo": "satelite",
+                "atribs": [{"infos": {"Nome": self.nome}, "tipo": "string", "valor": "nome"},
+                           {"infos": {"Tamanho": self.tamanho}, "tipo": "float", "valor": "tamanho"},
+                           {"infos": {"Peso": self.peso}, "tipo": "float", "valor": "peso"},
+                           {"infos": {"Composição": self.comp_sn}, "tipo": "string", "valor": "comp_sn"}]}
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -120,6 +162,7 @@ def registro():
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():
     if request.method == "POST":
+        print("aqui")
         nome = request.form["nome"]
         tipo = request.form["tipo"]
         
@@ -157,6 +200,8 @@ def entidades():
             db.session.add(Satelite(nome))
         
         db.session.commit()
+    elif request.method == "POST" and "mod" in request.form:
+        print("opa")
     return render_template("entidades.html")
 
 @app.route("/entidades/get_entidades", methods=["GET"])
@@ -180,6 +225,44 @@ def get_infos():
         infos = {}
         if tipo == "planeta":
             infos = Planeta.query.get(req_id).infos()
+        return jsonify(infos)
+        
+@app.route("/entidades/all_types", methods=["GET"])
+def all_types():
+    if request.method == "GET":
+        return jsonify(
+            {"tam_tipos": 5,
+             "tipos": [{"Planeta": "planeta"}, {"Satélite natural": "satelite"}, {"Estrela": "estrela"}, {"Galáxia": "galaxia"}, {"Sistema planetário": "sistema"}],
+             "tam_atribs": 12,
+             "atribs": [{"info": "Nome", "tipo": "string", "valor": "nome"},
+                        {"info": "Tamanho", "tipo": "float", "valor": "tamanho"}, 
+                        {"info": "Peso", "tipo": "float", "valor": "peso"}, 
+                        {"info": "Velocidade de rotação", "tipo": "float", "valor": "vel_rotacao"},
+                        {"info": "Possui satélite natural", "tipo": "bool", "valor": "possui_sn"},
+                        {"info": "Composição do planeta", "tipo": "string", "valor": "comp_planeta"},
+                        {"info": "Idade", "tipo": "int", "valor": "idade"},
+                        {"info": "Possui estrela", "tipo": "bool", "valor": "possui_estrela"},
+                        {"info": "Quantidade sistemas", "tipo": "int", "valor": "qt_sistema"}, 
+                        {"info": "Quantidade de planetas", "tipo": "int", "valor": "qt_planetas"},
+                        {"info": "Quantidade de estrelas", "tipo": "int", "valor": "qt_estrelas"},
+                        {"info": "Distância até a terra", "tipo": "float", "valor": "dist_terra"}],
+             "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False]}
+        )
+
+@app.route("/entidades/get_infos_tipos", methods=["POST"])
+def get_infos_tipos():
+    if request.method == "POST":
+        req_id = request.get_json()
+        i = 0
+        while (not req_id[i].isdigit()):
+            i += 1
+        tipo = req_id[0: i]
+
+        print(req_id)
+
+        infos = {}
+        if tipo == "planeta":
+            infos = Planeta.query.get(req_id).infos_tipos()
         return jsonify(infos)
     
 @app.route("/entidade/remove_entidade", methods=["POST"])
@@ -207,14 +290,6 @@ def remover_entidade():
         db.session.commit()
         
         return '', 204
-
-@app.route("/modificar", methods=["GET", "POST"])
-def modificar():
-    if request.method == "POST":
-        nome = request.form["nome"]
-        #tipo = request.form["tipo"]
-        return redirect("entidades")
-    return render_template("modificar.html")
 
 if __name__ == "__main__":
     app.run(threaded=True, debug=True, port=5000)
