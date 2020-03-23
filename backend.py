@@ -6,7 +6,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qqoqrjyiraaihu:f61c12db70772
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-#armengue
 n_planetas = 0
 n_estrelas = 0
 n_satelites = 0
@@ -129,7 +128,6 @@ class Sistema(db.Model):
         self.qt_estrelas = qt_estrelas
         self.idade = idade
         self.galaxia_id = galaxia_id
-        self.estrelas = estrelas
         self.sistema_estrelas = sistema_estrelas
         self.sistema_planetas = sistema_planetas
 
@@ -137,7 +135,7 @@ class Sistema(db.Model):
         return {"id": self.id, "Nome": self.nome}
 
     def infos(self):
-        return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade, "Pertence à galáxia": self.galaxia_id, "Pertence às estrelas": self.sistema_estrelas, "Possui os planetas": self.sistema_planetas}
+        return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade, "Pertence à galáxia": self.galaxia_id, "Pertence às estrelas": get_id(self.sistema_estrelas), "Possui os planetas": get_id(self.sistema_planetas)}
         
     def pegar_estrelas(self):
         ests = Estrela.query.all()
@@ -397,13 +395,13 @@ def registro():
 
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():
-    global n_planetas
-    global n_satelites
-    global n_sistemas
-    global n_estrelas
-
+    
     if request.method == "POST" and "add" in request.form:
-        print("aqui")
+        global n_planetas
+        global n_satelites
+        global n_sistemas
+        global n_estrelas
+
         nome = request.form["nome"]
         tipo = request.form["tipo"]
         

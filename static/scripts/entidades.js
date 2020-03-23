@@ -356,9 +356,6 @@ async function criar_form() {
             }
 
             input.setAttribute("name", atrib["valor"]);
-            if (!atrib["null"]) {
-                input.setAttribute("required", "");
-            }
             
             field_div.appendChild(label);
             field_div.appendChild(document.createElement("br"));
