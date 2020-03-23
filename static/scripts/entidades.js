@@ -233,6 +233,7 @@ async function criar_form() {
         
         let form = document.createElement("form");
         form.setAttribute("method", "POST");
+        form.className = "custom-form";
         
         let len_tipos = data["tam_tipos"];
         let tipos = data["tipos"];
@@ -268,14 +269,11 @@ async function criar_form() {
                 field_div.style.display = "none";
             }
             
-            let label = document.createElement("div");
+            let label = document.createElement("label");
             label.setAttribute("for", atrib["valor"]);
             label.innerHTML = atrib["info"];
             
-            field_div.appendChild(document.createElement("br"));
-            
             let input = document.createElement("input");
-            
             switch (atrib["tipo"]) {
                 case "int":
                     input.setAttribute("type", "number");
@@ -289,10 +287,10 @@ async function criar_form() {
                 default:
                     break;
             }
-            
             input.setAttribute("name", atrib["valor"]);
             
             field_div.appendChild(label);
+            field_div.appendChild(document.createElement("br"));
             field_div.appendChild(input);
             
             form.appendChild(field_div);
@@ -302,6 +300,11 @@ async function criar_form() {
         btn.setAttribute("type", "submit");
         btn.setAttribute("value", "Adicionar");
         form.appendChild(btn);
+        
+        let indicator = document.createElement("input");
+        indicator.style.display= "none";
+        indicator.setAttribute("name", "add");
+        form.appendChild(indicator);
         
         div_content.appendChild(form);
         
@@ -314,12 +317,6 @@ async function criar_form() {
 async function action_modificar(id) {
     console.log("aqui");
     
-    let div_modal = document.createElement("div");
-    div_modal.className = "add-popup";
-    
-    let div = document.createElement("div");
-    div.className = "add-popup-content";
-    
     let data = id;
     var options = {
         method: "POST",
@@ -328,33 +325,107 @@ async function action_modificar(id) {
         },
         body: JSON.stringify(data)
     };
-    let response = await fetch("/entidades/get_infos", options);
+    let response = await fetch("/entidades/get_infos_tipos", options);
     
     if (response.ok) {
         let infos = await response.json();
         
         console.log(infos);
+    
+        let div = document.createElement("div");
+        div.className = "add-popup";
+    
+        let div_content = document.createElement("div");
+        div_content.className = "add-popup-content";
+    
+        let form = document.createElement("form");
+        form.setAttribute("method", "POST");
+        form.setAttribute("name", "mod");
+        form.className = "custom-form";
         
-        for (const [key, value] of Object.entries(infos)) {
-            let atrib = document.createElement("p");
-            atrib.innerHTML = key;
-            
-            let val_atrib = document.createElement("input");
-            val_atrib.setAttribute("type", "text");
-            val_atrib.setAttribute("value", value);
-            
-            div.appendChild(atrib);
-            div.appendChild(val_atrib);
+        let len = infos["tam"];
+        let label_atribs = infos["label_atribs"];
+        let type_atribs = infos["type_atribs"];
+        let atribs = infos["atribs"];
+        
+        for (let i = 0; i < len; i++) {
+            for (const [key, value] of Object.entries(atribs[i])) {
+                let label = document.createElement("label");
+                label.setAttribute("for", key);
+                label.innerHTML = label_atribs[i];
+                
+                let input = document.createElement("input");
+                
+                switch (type_atribs[i]) {
+                    case "int":
+                        input.setAttribute("type", "number");
+                        input.setAttribute("value", value);
+                        break;
+                    case "float":
+                        input.setAttribute("type", "number");
+                        input.setAttribute("step", "0.000000000001");
+                        input.setAttribute("value", value);
+                        break;
+                    case "string":
+                        input.setAttribute("type", "text");
+                        input.setAttribute("value", value);
+                        break;
+                    case "array":
+                        input = document.createElement("select");
+                        let lista = infos["arrays"][i];
+                        console.log(lista);
+                        for (let i = 0; i < lista.length; i++) {
+                            let opt = document.createElement('option');
+                            opt.setAttribute("value", lista[i]);
+                            opt.innerHTML = lista[i];
+                            if (lista[i] === value) {
+                                opt.setAttribute("selected", "selected");
+                            }
+                            input.appendChild(opt);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                
+                input.setAttribute("name", key);
+                
+                form.appendChild(label);
+                form.appendChild(document.createElement("br"));
+                form.appendChild(input);
+            }
         }
+        
+        let btn_modificar = document.createElement("input");
+        btn_modificar.setAttribute("type", "submit");
+        btn_modificar.setAttribute("value", "Modificar");
+        form.appendChild(btn_modificar);
+        
+        let indicator = document.createElement("input");
+        indicator.style.display= "none";
+        indicator.setAttribute("name", "mod");
+        form.appendChild(indicator);
+        
+        let id_indicator = document.createElement("input");
+        id_indicator.style.display= "none";
+        id_indicator.setAttribute("type", "text");
+        id_indicator.setAttribute("name", "id");
+        id_indicator.setAttribute("value", id);
+        form.appendChild(id_indicator);
+        
+        let type_indicator = document.createElement("input");
+        type_indicator.style.display= "none";
+        type_indicator.setAttribute("type", "text");
+        type_indicator.setAttribute("name", "tipo");
+        type_indicator.setAttribute("value", infos["tipo"]);
+        form.appendChild(type_indicator);
+        
+        div_content.appendChild(form);
+        div.appendChild(div_content);
+        
+        document.body.appendChild(div);
     }
-    
-    let btn_modificar = document.createElement("button");
-    div.appendChild(btn_modificar);
-    
-    div_modal.appendChild(div);
-    div_modal.style.display = "block";
-    
-    document.body.appendChild(div_modal);
+
 }
 
 get_entidades();
