@@ -175,6 +175,7 @@ class Satelite(db.Model):
                            {"infos": {"Peso": self.peso}, "tipo": "float", "valor": "peso"},
                            {"infos": {"Composição": self.comp_sn}, "tipo": "string", "valor": "comp_sn"}]}
 
+
 class GiganteVermelha(db.Model):
     __tablename__ = 'gigante_vermelha'
     estrela_id = db.Column('estrela', db.Integer, db.ForeignKey('id_estrela'), primary_key=True, nullable=False)
@@ -182,6 +183,7 @@ class GiganteVermelha(db.Model):
 
     def __init__(self):
         self.morte = False
+
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -307,7 +309,8 @@ def get_infos_tipos():
         if tipo == "planeta":
             infos = Planeta.query.get(req_id).infos_tipos()
         return jsonify(infos)
-    
+
+
 @app.route("/entidade/remove_entidade", methods=["POST"])
 def remover_entidade():
     print("aqui")
@@ -333,6 +336,27 @@ def remover_entidade():
         db.session.commit()
         
         return '', 204
+
+
+@app.route("/entidade/busca_entidade", methods=["POST"])
+def busca():
+    if request.method == "POST":
+        entidade = request.form["busca"]
+        planeta = Planeta.query.get(entidade)
+        atributos = dict()
+
+        if planeta:
+            atributos["nome"] = planeta.nome
+            atributos["tamanho"] = planeta.tamanho
+            atributos["peso"] = planeta.peso
+            atributos["comp_planeta"] = planeta.comp_planeta
+            atributos["possui_sn"] = planeta.possui_sn
+            atributos["vel_rotacao"] = planeta.vel_rotacao
+        else:
+            atributos["nome"] = "Planeta inexistente ou não cadastrado!"
+
+        return jsonify(atributos)
+
 
 if __name__ == "__main__":
     app.run(threaded=True, debug=True, port=5000)

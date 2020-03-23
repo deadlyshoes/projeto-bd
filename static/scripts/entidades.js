@@ -357,4 +357,19 @@ async function action_modificar(id) {
     document.body.appendChild(div_modal);
 }
 
+async function searchResult() {
+    let result = await fetch("/entidade/busca_entidade");
+
+    if (response.ok){
+        let jresult = await result.json();
+
+        if (jresult["nome"] != "Planeta inexistente ou não cadastrado!") { 
+            confirm("Planeta encontrado!");
+        } else {
+            confirm("Planeta não encontrado!");
+        };
+        
+    };
+};
+
 get_entidades();

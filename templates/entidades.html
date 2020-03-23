@@ -10,7 +10,7 @@
 	<div class="cabecalho">
 		<button type="button" onclick="criar_form()">Adicionar</button>
 		<form action="" method="post">
-			<input type="text" name="busca" placeholder="Busca..."
+			<input type="search" onsearch="searchResult()" id="busca" name="busca" placeholder="Busca..."
 				value="{{ request.form.busca }}">
 		</form>
 	</div>
