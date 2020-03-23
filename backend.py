@@ -6,6 +6,24 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qqoqrjyiraaihu:f61c12db70772
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+def from_bool(val):
+    if val == True:
+        return "Sim"
+    return "Não"
+
+def to_bool(val):
+    if val == "Sim":
+        return True
+    return False
+
+class Usuario(db.Model):
+    __tablename__ = 'usuario'
+    login = db.Column('klogin', db.Unicode, primary_key=True)
+    senha = db.Column('kpassword', db.Unicode)
+    
+    def __init__(self, login, senha):
+        self.login = login;
+        self.senha = senha;
 
 class Galaxia(db.Model):
     __tablename__ = 'galaxia'
@@ -26,11 +44,13 @@ class Galaxia(db.Model):
         return {"Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
         
     def infos_tipos(self):
-        return {"tam": 3, 
+        return {"tam": 3,
                 "tipo": "galaxia",
+                "type_atribs": ["string", "int", "float"],
+                "label_atribs": ["Nome", "Quantidade de sistemas", "Distância até a terra"],
                 "atribs": [{"nome": self.nome},
                            {"qt_sistema": self.qt_sistema}, 
-                           {"dist_terra": self.qt_sistema}]}
+                           {"dist_terra": self.dist_terra}]}
 
 
 sistema_estrela = db.Table('sistema_estrela',
@@ -65,6 +85,8 @@ class Sistema(db.Model):
     def infos_tipos(self):
         return {"tam": 4,
                 "tipo": "sistema",
+                "type_atribs": ["string", "int", "int", "int"],
+                "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade"],
                 "atribs": [{"nome": self.nome},
                            {"qt_planetas": self.qt_planetas},
                            {"qt_estrelas": self.qt_estrelas},   
@@ -103,10 +125,13 @@ class Estrela(db.Model):
     def infos_tipos(self):
         return {"tam": 5,
                 "tipo": "estrela",
+                "arrays": [0, 0, 0, ["Sim", "Não"], 0],
+                "type_atribs": ["string", "float", "int", "array", "float"],
+                "label_atribs": ["Nome", "Tamanho", "Idade", "Possui estrela", "Distância até a terra"],
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"idade": self.idade},
-                           {"Possui estrela": self.possui_estrela},
+                           {"Possui estrela": from_bool(self.possui_estrela)},
                            {"dist_terra": self.dist_terra}]}
 
 
@@ -128,7 +153,7 @@ class Planeta(db.Model):
         self.tamanho = tamanho
         self.peso = peso
         self.comp_planeta = comp_planeta
-        self.possui_sn = True
+        self.possui_sn = possui_sn
         self.vel_rotacao = vel_rotacao
         
     def header_infos(self):
@@ -140,11 +165,14 @@ class Planeta(db.Model):
     def infos_tipos(self):
         return {"tam": 6,
                 "tipo": "planeta",
+                "arrays": [0, 0, 0, 0, ["Sim", "Não"], 0],
+                "type_atribs": ["string", "float", "float", "float", "array", "string"],
+                "label_atribs": ["Nome", "Tamanho", "Peso", "Velocidade de rotação", "Possui satélite natural", "Composição do planeta"],
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"peso": self.peso},
                            {"vel_rotacao": self.vel_rotacao},
-                           {"possui_sn": self.possui_sn},
+                           {"possui_sn": from_bool(self.possui_sn)},
                            {"comp_planeta": self.comp_planeta}]}
 
 
@@ -170,10 +198,12 @@ class Satelite(db.Model):
     def infos_tipos(self):
         return {"tam": 4,
                 "tipo": "satelite",
-                "atribs": [{"infos": {"Nome": self.nome}, "tipo": "string", "valor": "nome"},
-                           {"infos": {"Tamanho": self.tamanho}, "tipo": "float", "valor": "tamanho"},
-                           {"infos": {"Peso": self.peso}, "tipo": "float", "valor": "peso"},
-                           {"infos": {"Composição": self.comp_sn}, "tipo": "string", "valor": "comp_sn"}]}
+                "type_atribs": ["string", "flaot", "float", "string"],
+                "label_atribs": ["Nome", "Tamanho", "Peso", "Composição"],
+                "atribs": [{"nome": self.nome},
+                           {"tamanho": self.tamanho},
+                           {"peso": self.peso},
+                           {"comp_satelite": self.comp_satelite}]}
 
 
 class GiganteVermelha(db.Model):
@@ -188,25 +218,32 @@ class GiganteVermelha(db.Model):
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario = request.form["username"]
+        login = request.form["username"]
         senha = request.form["password"]
-        if (usuario == "deadlyshoes"):
+        
+        usuario = Usuario.query.get(login)
+        if (usuario == None or usuario.senha != senha):
             return render_template("login.html", tipo="error")
-        else:
-            return redirect("entidades")
+        return redirect("entidades")
     return render_template("login.html", tipo="hidden")
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
-        usuario = request.form["username"]
+        login = request.form["username"]
         senha = request.form["password"]
+        
+        usuario = Usuario.query.get(login)
+        if (usuario != None):
+            return redirect("registro.html", tipo="error")
+        db.session.add(Usuario(login, senha))
+        db.session.commit()
         return redirect("entidades")
-    return render_template("registro.html")
+    return render_template("registro.html", tipo="hidden")
 
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():
-    if request.method == "POST":
+    if request.method == "POST" and "add" in request.form:
         print("aqui")
         nome = request.form["nome"]
         tipo = request.form["tipo"]
@@ -215,7 +252,7 @@ def entidades():
             tamanho = request.form["tamanho"]
             peso = request.form["peso"]
             comp_planeta = request.form["comp_planeta"]
-            possui_sn = request.form["possui_sn"]
+            possui_sn = to_bool(request.form["possui_sn"])
             vel_rotacao = request.form["vel_rotacao"]
             
             db.session.add(Planeta(nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao))
@@ -228,7 +265,7 @@ def entidades():
         elif tipo == "estrela":
             tamanho = request.form["tamanho"]
             idade = request.form["idade"]
-            possui_estrela = request.form["possui_estrela"]
+            possui_estrela = to_bool(request.form["possui_estrela"])
             dist_terra = request.form["dist_terra"]
             
             db.session.add(Estrela(nome))
@@ -246,7 +283,52 @@ def entidades():
         
         db.session.commit()
     elif request.method == "POST" and "mod" in request.form:
-        print("opa")
+        print("aqui")
+        
+        iden = request.form["id"];
+        tipo = request.form["tipo"]
+        
+        if tipo == "planeta":
+            planeta = Planeta.query.get(iden)
+            print(planeta)
+            
+            planeta.nome = request.form["nome"]
+            planeta.tamanho = request.form["tamanho"]
+            planeta.peso = request.form["peso"]
+            planeta.comp_planeta = request.form["comp_planeta"]
+            planeta.possui_sn = to_bool(request.form["possui_sn"])
+            planeta.vel_rotacao = request.form["vel_rotacao"]
+            print(request.form["possui_sn"])
+        elif tipo == "sistema":
+            sistema = Sistema.query.get(iden)
+            
+            sistema.nome = request.form["nome"]
+            sistema.qt_estrelas = request.form["tamanho"]
+            sistema.qt_planetas = request.form["qt_planeatas"]
+            sistema.idade = request.form["idade"]
+        elif tipo == "estrela":
+            estrela = Estrela.query.get(iden)
+            
+            estrela.nome = request.form["nome"]
+            estrela.tamanho = request.form["tamanho"]
+            estrela.idade = request.form["idade"]
+            estrela.possui_estrela = to_bool(request.form["possui_estrela"])
+            estrela.dist_terra = request.form["dist_terra"]
+        elif tipo == "galaxia":
+            galaxia = Galaxia.query.get(iden)
+            
+            galaxia.nome = request.form["nome"]
+            galaxia.qt_sistema = request.form["qt_sistema"]
+            galaxia.dist_terra = request.form["dist_terra"]
+        else:
+            satelite = Satelite.query.get(iden)
+            
+            satelite.nome = request.form["nome"]
+            satelite.tamanho = request.form["tamanho"]
+            satelite.peso = request.form["peso"]
+            satelite.comp_sn = request.form["comp_sn"]
+        
+        db.session.commit()
     return render_template("entidades.html")
 
 @app.route("/entidades/get_entidades", methods=["GET"])
@@ -286,7 +368,7 @@ def all_types():
                         {"info": "Possui satélite natural", "tipo": "bool", "valor": "possui_sn"},
                         {"info": "Composição do planeta", "tipo": "string", "valor": "comp_planeta"},
                         {"info": "Idade", "tipo": "int", "valor": "idade"},
-                        {"info": "Possui estrela", "tipo": "bool", "valor": "possui_estrela"},
+                        {"info": "Possui estrela", "tipo": "array", "valor": "possui_estrela", "array": ["Sim", "Não"]},
                         {"info": "Quantidade sistemas", "tipo": "int", "valor": "qt_sistema"}, 
                         {"info": "Quantidade de planetas", "tipo": "int", "valor": "qt_planetas"},
                         {"info": "Quantidade de estrelas", "tipo": "int", "valor": "qt_estrelas"},
@@ -308,6 +390,15 @@ def get_infos_tipos():
         infos = {}
         if tipo == "planeta":
             infos = Planeta.query.get(req_id).infos_tipos()
+        elif tipo == "galaxia":
+            infos = Galaxia.query.get(req_id).infos_tipos()
+        elif tipo == "satelite":
+            infos = Satelite.query.get(req_id).infos_tipos()
+        elif tipo == "sistema":
+            infos = Sistema.query.get(req_id).infos_tipos()
+        elif tipo == "estrela":
+            infos = Estrela.query.get(req_id).infos_tipos()
+        
         return jsonify(infos)
 
 
