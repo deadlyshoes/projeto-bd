@@ -27,8 +27,9 @@ class Usuario(db.Model):
     senha = db.Column('kpassword', db.Unicode)
     
     def __init__(self, login, senha):
-        self.login = login;
-        self.senha = senha;
+        self.login = login
+        self.senha = senha
+
 
 class Galaxia(db.Model):
     __tablename__ = 'galaxia'
@@ -48,6 +49,15 @@ class Galaxia(db.Model):
     def infos(self):
         return {"Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
         
+    def pegar_sistemas(self):
+        sistemas = Sistema.query.all()
+        ids = list()
+
+        for sistema in sistemas:
+            ids.append(sistema.id_sistema)
+
+        return ids
+
     def infos_tipos(self):
         return {"tam": 3,
                 "tipo": "galaxia",
@@ -93,24 +103,32 @@ class Sistema(db.Model):
         return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
         
     def pegar_estrelas(self):
-        ests = Estrelas.query.all()
+        ests = Estrela.query.all()
         ls = []
         for est in ests:
-            ls.append(ests.id_estrela)
+            ls.append(est.id_estrela)
         return ls
-
+    
     def pegar_galaxias(self):
-        gals = Galaxias.query.all()
+        gals = Galaxia.query.all()
         ls = []
 
         for gal in gals:
-            ls.append(gals.id_galaxia)
+            ls.append(gal.id_galaxia) 
         return ls
+
+    def pegar_planetas(self):
+        planetas = Planeta.query.all()
+        ids = list()
+        
+        for planeta in planetas:
+            ids.append(planeta.id) 
+        return ids
 
     def infos_tipos(self):
         return {"tam": 4,
                 "tipo": "sistema",
-                "arrays": [0, 0, 0, 0, pegar_galaxias(), pegar_estrelas()],
+                "arrays": [0, 0, 0, 0, self.pegar_planetas(), self.pegar_estrelas(), self.pegar_galaxias()],
                 "type_atribs": ["string", "int", "int", "int", "array", "multi_array"],
                 "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade", "Pertence a"],
                 "atribs": [{"nome": self.nome},
@@ -139,7 +157,7 @@ class Estrela(db.Model):
 
     orb_salites = db.relationship('Satelite', secondary=orbitar, backref=db.backref('orb_estrelas', lazy='dynamic'))
 
-    #gigante_vermelha = db.relationship('GiganteVermelha', uselist=False)
+    # gigante_vermelha = db.relationship('GiganteVermelha', uselist=False)
     
     def __init__(self, nome, tipo, tamanho, idade, possui_estrela, dist_terra):
         self.nome = nome
@@ -154,11 +172,29 @@ class Estrela(db.Model):
 
     def infos(self):
         return {"Tipo": self.tipo_estrela, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra}
+
+    def pegar_planetas(self):
+        planetas = Planeta.query.all()
+        ids = list()
         
+        for planeta in planetas:
+            ids.append(planeta.id) 
+
+        return ids
+
+    def pegar_satelites(self):
+        satelites = Satelite.query.all()
+        ids = list()
+
+        for satelite in satelites:
+            ids.append(satelite.id_satelite)
+
+        return ids
+    
     def infos_tipos(self):
         return {"tam": 5,
                 "tipo": "estrela",
-                "arrays": [0, 0, 0, ["Sim", "Não"], 0],
+                "arrays": [0, 0, 0, ["Sim", "Não"], 0, self.pegar_satelites(), self.pegar_planetas()],
                 "type_atribs": ["string", "float", "int", "array", "float"],
                 "label_atribs": ["Nome", "Tamanho", "Idade", "Possui estrela", "Distância até a terra"],
                 "atribs": [{"nome": self.nome},
@@ -199,6 +235,14 @@ class Planeta(db.Model):
         for sist in sistemas:
             ls.append(sist.id)
         return ls
+
+    def pegar_satelites(self):
+        satelites = Satelite.query.all()
+        ids = list()
+
+        for satelite in satelites:
+            ids.append(satelite.id)
+        return ids
 
     def infos(self):
         return {"Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta, "Pertence a": self.planeta_sistemas}
@@ -349,7 +393,7 @@ def entidades():
     elif request.method == "POST" and "mod" in request.form:
         print("aqui")
         
-        iden = request.form["id"];
+        iden = request.form["id"]
         tipo = request.form["tipo"]
         
         if tipo == "planeta":
