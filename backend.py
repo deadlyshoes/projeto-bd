@@ -6,6 +6,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qqoqrjyiraaihu:f61c12db70772
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+class Usuario(db.Model):
+    __tablename__ = 'usuario'
+    login = db.Column('klogin', db.Unicode, primary_key=True)
+    senha = db.Column('kpassword', db.Unicode)
+    
+    def __init__(self, login, senha):
+        self.login = login;
+        self.senha = senha;
 
 class Galaxia(db.Model):
     __tablename__ = 'galaxia'
@@ -186,21 +194,28 @@ class GiganteVermelha(db.Model):
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        usuario = request.form["username"]
+        login = request.form["username"]
         senha = request.form["password"]
-        if (usuario == "deadlyshoes"):
+        
+        usuario = Usuario.query.get(login)
+        if (usuario == None or usuario.senha != senha):
             return render_template("login.html", tipo="error")
-        else:
-            return redirect("entidades")
+        return redirect("entidades")
     return render_template("login.html", tipo="hidden")
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
-        usuario = request.form["username"]
+        login = request.form["username"]
         senha = request.form["password"]
+        
+        usuario = Usuario.query.get(login)
+        if (usuario != None):
+            return redirect("registro.html", tipo="error")
+        db.session.add(Usuario(login, senha))
+        db.session.commit()
         return redirect("entidades")
-    return render_template("registro.html")
+    return render_template("registro.html", tipo="hidden")
 
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():

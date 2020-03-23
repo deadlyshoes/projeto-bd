@@ -4,6 +4,12 @@ create sequence estrela_seq start 1 increment 1;
 create sequence planeta_seq start 1 increment 1;
 create sequence satelite_seq start 1 increment 1;
 
+create table usuario(
+    klogin varchar(45),
+    kpassword varchar(45),
+    constraint pk_usuario primary key (klogin)
+);
+
 create table planeta(
 	id_planeta varchar(45) default 'temp',
 	nome varchar(45),
