@@ -148,7 +148,11 @@ function atualizar_campos() {
     let possui_sn = document.getElementById("possui_sn");
     let vel_rotacao = document.getElementById("vel_rotacao");
     let possui_estrela = document.getElementById("possui_estrela");
-    let estrelas = document.getElementById("estrelas");
+    let sistema_estrelas = document.getElementById("sistema_estrelas");
+    let galaxia_id = document.getElementById("galaxia_id");
+    let sistema_planetas = document.getElementById("sistema_planetas");
+    let estrela_sistemas = document.getElementById("estrela_sistemas");
+    let planeta_sistemas = document.getElementById("planeta_sistemas");
     
     switch (tipo) {
         case "galaxia":
@@ -166,6 +170,10 @@ function atualizar_campos() {
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
             sistema_estrelas.style.display = "none";
+            sistema_planetas.style.display = "none";
+            galaxia_id.style.display = "none";
+            estrela_sistemas.style.display = "none";
+            planeta_sistemas.style.display = "none";
             break;
         case "estrela":
             nome.style.display = "block";
@@ -182,6 +190,10 @@ function atualizar_campos() {
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "block";
             sistema_estrelas.style.display = "none";
+            sistema_planetas.style.display = "none";
+            galaxia_id.style.display = "none";
+            estrela_sistemas.style.display = "block";
+            planeta_sistemas.style.display = "none";
             break;
         case "sistema":
             nome.style.display = "block";
@@ -198,6 +210,10 @@ function atualizar_campos() {
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
             sistema_estrelas.style.display = "block";
+            sistema_planetas.style.display = "block";
+            galaxia_id.style.display = "block";
+            estrela_sistemas.style.display = "none";
+            planeta_sistemas.style.display = "none";
             break;
         case "planeta":
             nome.style.display = "block";
@@ -214,6 +230,11 @@ function atualizar_campos() {
             vel_rotacao.style.display = "block";
             possui_estrela.style.display = "none";
             sistema_estrelas.style.display = "none";
+            sistema_estrelas.style.display = "none";
+            sistema_planetas.style.display = "none";
+            galaxia_id.style.display = "none";
+            estrela_sistemas.style.display = "none";
+            planeta_sistemas.style.display = "block";
             break;
         case "satelite":
             nome.style.display = "block";
@@ -230,6 +251,11 @@ function atualizar_campos() {
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
             sistema_estrelas.style.display = "none";
+            sistema_estrelas.style.display = "none";
+            sistema_planetas.style.display = "none";
+            galaxia_id.style.display = "none";
+            estrela_sistemas.style.display = "none";
+            planeta_sistemas.style.display = "none";
             break;
         default:
             break;
@@ -308,7 +334,6 @@ async function criar_form() {
                 case "array":
                     input = document.createElement("select");
                     let lista = atrib["array"];
-                    console.log(ls);
                     for (let i = 0; i < lista.length; i++) {
                         let opt = document.createElement('option');
                         opt.setAttribute("value", lista[i]);
@@ -320,9 +345,8 @@ async function criar_form() {
                     input = document.createElement("select");
                     input.setAttribute("multiple", "");
                     let ls = atrib["array"];
-                    console.log(ls);
                     for (let i = 0; i < ls.length; i++) {
-                        let opt = document.createElement('option');
+                        let opt = document.createElement("option");
                         opt.setAttribute("value", ls[i]);
                         opt.innerHTML = ls[i];
                         input.appendChild(opt);
@@ -330,7 +354,11 @@ async function criar_form() {
                 default:
                     break;
             }
+
             input.setAttribute("name", atrib["valor"]);
+            if (!atrib["null"]) {
+                input.setAttribute("required", "");
+            }
             
             field_div.appendChild(label);
             field_div.appendChild(document.createElement("br"));

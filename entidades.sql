@@ -54,21 +54,21 @@ create table estrela(
 );
 
 create table sistema_estrela(
-	sistema varchar(45),
+	  sistema_id varchar(45),
   	sistema_galaxia varchar(45),
-  	estrela varchar(45),
-  	constraint fk_sistema foreign key (sistema) references sistema(id_sistema),
+  	estrela_id varchar(45),
+  	constraint fk_sistema foreign key (sistema_id) references sistema(id_sistema),
   	constraint fk_sistema_galaxia foreign key (sistema_galaxia) references galaxia(id_galaxia),
-  	constraint fk_estrela foreign key (estrela) references estrela(id_estrela)
+  	constraint fk_estrela foreign key (estrela_id) references estrela(id_estrela)
 );
 
 create table sistema_planeta(
-	sistema varchar(45),
+	  sistema_id varchar(45),
   	sistema_galaxia varchar(45),
-  	planeta varchar(45),
-  	foreign key (sistema) references sistema(id_sistema),
+  	planeta_id varchar(45),
+  	foreign key (sistema_id) references sistema(id_sistema),
   	foreign key (sistema_galaxia) references galaxia(id_galaxia),
-  	foreign key (planeta) references planeta(id_planeta)
+  	foreign key (planeta_id) references planeta(id_planeta)
 );
 
 create table ana_vermelha(
