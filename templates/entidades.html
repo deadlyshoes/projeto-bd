@@ -9,9 +9,8 @@
 <body>
 	<div class="cabecalho">
 		<button type="button" onclick="criar_form()">Adicionar</button>
-		<form action="" method="post">
-			<input type="search" onsearch="searchResult()" id="busca" name="busca" placeholder="Busca..."
-				value="{{ request.form.busca }}">
+		<form action="" onsubmit="return search()">
+			<input type="search" id="busca_nome" placeholder="Busca...">
 		</form>
 	</div>
 	<div class="notificacao">

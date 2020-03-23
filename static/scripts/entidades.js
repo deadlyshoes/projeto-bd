@@ -63,13 +63,27 @@ async function remover_entidade(id) {
     let response = await fetch("/entidade/remove_entidade", options);
 }
 
-async function get_entidades() {
-    let response = await fetch("/entidades/get_entidades");
+async function get_entidades(nome, filtros) {
+    console.log("aqui");
+
+    let params = {
+        "nome": nome,
+        "filtros": filtros 
+    };
+    var options = {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify(params)
+    };
+    let response = await fetch("/entidades/get_entidades", options);
     
     if (response.ok) {
         let entidades = await response.json();
         let len = entidades.length;
         let parentDiv = document.createElement("div");
+        parentDiv.id = "lista-entidades";
         
         for (let i = 0; i < len; i++) {
             let obj = entidades[i];
@@ -335,8 +349,8 @@ async function action_modificar(id) {
         let div = document.createElement("div");
         div.className = "add-popup";
     
-        let div_content = document.createElement("div");
-        div_content.className = "add-popup-content";
+        let div_cont = document.createElement("div");
+        div_cont.className = "add-popup-content";
     
         let form = document.createElement("form");
         form.setAttribute("method", "POST");
@@ -396,51 +410,59 @@ async function action_modificar(id) {
             }
         }
         
-        let btn_modificar = document.createElement("input");
-        btn_modificar.setAttribute("type", "submit");
-        btn_modificar.setAttribute("value", "Modificar");
-        form.appendChild(btn_modificar);
+        let btn_mod = document.createElement("input");
+        btn_mod.setAttribute("type", "submit");
+        btn_mod.setAttribute("value", "Modificar");
+        form.appendChild(btn_mod);
         
-        let indicator = document.createElement("input");
-        indicator.style.display= "none";
-        indicator.setAttribute("name", "mod");
-        form.appendChild(indicator);
+        let ind = document.createElement("input");
+        ind.style.display= "none";
+        ind.setAttribute("name", "mod");
+        form.appendChild(ind);
         
-        let id_indicator = document.createElement("input");
-        id_indicator.style.display= "none";
-        id_indicator.setAttribute("type", "text");
-        id_indicator.setAttribute("name", "id");
-        id_indicator.setAttribute("value", id);
-        form.appendChild(id_indicator);
+        let id_ind = document.createElement("input");
+        id_ind.style.display= "none";
+        id_ind.setAttribute("type", "text");
+        id_ind.setAttribute("name", "id");
+        id_ind.setAttribute("value", id);
+        form.appendChild(id_ind);
         
-        let type_indicator = document.createElement("input");
-        type_indicator.style.display= "none";
-        type_indicator.setAttribute("type", "text");
-        type_indicator.setAttribute("name", "tipo");
-        type_indicator.setAttribute("value", infos["tipo"]);
-        form.appendChild(type_indicator);
+        let type_ind = document.createElement("input");
+        type_ind.style.display= "none";
+        type_ind.setAttribute("type", "text");
+        type_ind.setAttribute("name", "tipo");
+        type_ind.setAttribute("value", infos["tipo"]);
+        form.appendChild(type_ind);
         
-        div_content.appendChild(form);
-        div.appendChild(div_content);
+        div_cont.appendChild(form);
+        div.appendChild(div_cont);
         
         document.body.appendChild(div);
     }
 
 }
 
-async function searchResult() {
-    let result = await fetch("/entidade/busca_entidade");
+function search() {
+    console.log("wow");
 
-    if (response.ok){
-        let jresult = await result.json();
+    let nome = document.getElementById("busca_nome").value;
+    //pla = document.forms.namedItem("busca_pla").innerHTML;
+    //est = document.forms.namedItem("busca_est").innerHTML;
+    //sist = document.forms.namedItem("busca_sist").innerHTML;
+    //gal = document.forms.namedItem("busca_gal").innerHTML;
+    //sat = document.forms.namedItem("busca_sat").innerHTML;
+    let pla = true;
+    let gal = false;
+    let est = false;
+    let sist = false;
+    let sat = false;
 
-        if (jresult["nome"] != "Planeta inexistente ou não cadastrado!") { 
-            confirm("Planeta encontrado!");
-        } else {
-            confirm("Planeta não encontrado!");
-        };
-        
-    };
-};
+    let infos = document.getElementById("lista-entidades");
+    infos.parentNode.removeChild(infos);
 
-get_entidades();
+    get_entidades(nome, {"planeta": pla, "estrela": est, "galaxia": gal, "satelite": sat, "sistema": sist});
+
+    return false;
+}
+
+get_entidades("", {"planeta": true, "galaxia": true, "estrela": true, "satelite": true, "sistema": true});

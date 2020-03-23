@@ -329,16 +329,50 @@ def entidades():
             satelite.comp_sn = request.form["comp_sn"]
         
         db.session.commit()
-    return render_template("entidades.html")
+    elif request.method == "POST":
+        print("aqui")
+        return '', 204
+    return render_template("entidades.html", nome='', filtros=[])
 
-@app.route("/entidades/get_entidades", methods=["GET"])
+@app.route("/entidades/get_entidades", methods=["POST"])
 def get_entidades():
-    if request.method == "GET":
-        lista = []
-        planetas = Planeta.query.all()
-        for planeta in planetas:
-            lista.append(planeta.header_infos())
-        return jsonify(lista)
+    if request.method == "POST":
+        data = request.get_json()
+        print(data)
+        nome = data["nome"]
+        filtros = data["filtros"]
+        
+        planetas = []
+        galaxias = []
+        sistemas = []
+        satelites = []
+        estrelas = []
+        
+        if filtros["planeta"]:
+            planetas = Planeta.query.filter(Planeta.nome.like('%' + nome + '%')).all()
+        if filtros["galaxia"]:
+            galaxias = Galaxia.query.filter(Galaxia.nome.like('%' + nome + '%')).all()
+        if filtros["sistema"]:
+            sistemas = Sistema.query.filter(Sistema.nome.like('%' + nome + '%')).all()
+        if filtros["satelite"]:
+            satelites = Satelite.query.filter(Satelite.nome.like('%' + nome + '%')).all()
+        if filtros["estrela"]:
+            estrelas = Estrela.query.filter(Estrela.nome.like('%' + nome + '%')).all()
+            
+        ls = []
+            
+        for pla in planetas:
+            ls.append(pla.header_infos())
+        for gal in galaxias:
+            ls.append(gal.header_infos())
+        for sis in sistemas:
+            ls.append(sis.header_infos())
+        for sat in satelites:
+            ls.append(sat.header_infos())
+        for est in estrelas:
+            ls.append(est.header_infos())
+
+        return jsonify(ls)
 
 @app.route("/entidades/get_infos", methods=["POST"])
 def get_infos():

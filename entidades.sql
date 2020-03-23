@@ -40,11 +40,14 @@ create table sistema(
   	constraint fk_galaxia foreign key (galaxia) references galaxia(id_galaxia)
 );
 
+create type tipo_estrela AS ENUM ('Anã Branca', 'Anã Vermelha', 'Estrela Binária', 'Gigante Azul', 'Gigante Vermelha');
+
 create table estrela(
 	id_estrela varchar(45) default 'temp',
   	nome varchar(45),
   	tamanho float,
   	idade int,
+    tipo tipo_estrela,
   	possui_estrela bool,
   	dist_terra float,
   	primary key (id_estrela)
