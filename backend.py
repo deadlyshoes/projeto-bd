@@ -141,7 +141,7 @@ class Sistema(db.Model):
         ests = Estrela.query.all()
         ls = []
         for est in ests:
-            ls.append(est.id_estrela)
+            ls.append(est.id)
         return ls
     
     def pegar_galaxias(self):
@@ -149,7 +149,7 @@ class Sistema(db.Model):
         ls = []
 
         for gal in gals:
-            ls.append(gal.id_galaxia) 
+            ls.append(gal.id) 
         return ls
 
     def pegar_planetas(self):
@@ -171,8 +171,8 @@ class Sistema(db.Model):
                            {"qt_estrelas": self.qt_estrelas},
                            {"idade": self.idade},
                            {"galaxia_id": self.galaxia_id},
-                           {"sistema_estrelas": self.sistema_estrelas},
-                           {"sistema_planetas": self.sistema_planetas}]}
+                           {"sistema_estrelas": get_id(self.sistema_estrelas)},
+                           {"sistema_planetas": get_id(self.sistema_planetas)}]}
 
 
 orbitar = db.Table('orbitar',
@@ -246,7 +246,7 @@ class Estrela(db.Model):
                            {"idade": self.idade},
                            {"Possui estrela": from_bool(self.possui_estrela)},
                            {"dist_terra": self.dist_terra},
-                           {"estrela_sistemas": self.estrela_sistemas}]}
+                           {"estrela_sistemas": get_id(self.estrela_sistemas)}]}
 
 
 class Planeta(db.Model):
