@@ -430,7 +430,8 @@ async function action_modificar(id) {
 
 async function searchResult() {
     let result = await fetch("/entidade/busca_entidade");
-
+    var tipoEntidade = document.getElementById("entidade").value;
+    
     if (response.ok){
         let jresult = await result.json();
 

@@ -12,6 +12,13 @@
 		<form action="" method="post">
 			<input type="search" onsearch="searchResult()" id="busca" name="busca" placeholder="Busca..."
 				value="{{ request.form.busca }}">
+			<select id="entidade">
+				<option value="planeta">planeta</option>
+				<option value="satelite">satelite</option>
+				<option value="estrela">estrela</option>
+				<option value="galaxia">galaxia</option>
+				<option value="sistema">sistema</option>
+			</select>
 		</form>
 	</div>
 	<div class="notificacao">
