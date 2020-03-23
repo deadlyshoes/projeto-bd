@@ -45,7 +45,7 @@ class Galaxia(db.Model):
     def infos(self):
         return {"Quantidade sistema": self.qt_sistema, "Distância até a terra": self.dist_terra}
         
-    def pegar_sistemas():
+    def pegar_sistemas(self):
         sistemas = Sistema.query.all()
         ids = list()
 
@@ -84,7 +84,7 @@ class Sistema(db.Model):
 
     estrelas = db.relationship('Estrela', secondary=sistema_estrela, backref=db.backref('sistemas', lazy='dynamic'))
     
-    def __init__(self, nome, qt_planetas=None, qt_estrelas=None, idade=None, galaxia_id, estrelas=None):
+    def __init__(self, nome, galaxia_id, qt_planetas=None, qt_estrelas=None, idade=None, estrelas=None):
         self.nome = nome
         self.qt_planetas = qt_planetas
         self.qt_estrelas = qt_estrelas
@@ -103,19 +103,19 @@ class Sistema(db.Model):
         ls = []
 
         for est in ests:
-            ls.append(ests.id_estrela)
+            ls.append(est.id_estrela)
 
         return ls
     
     def pegar_galaxias(self):
-        gals = Galaxias.query.all()
+        gals = Galaxia.query.all()
         ls = []
 
         for gal in gals:
-            ls.append(gals.id_galaxia) 
+            ls.append(gal.id_galaxia) 
 
         return ls
-        
+
     def pegar_planetas(self):
         planetas = Planeta.query.all()
         ids = list()
@@ -128,14 +128,14 @@ class Sistema(db.Model):
     def infos_tipos(self):
         return {"tam": 4,
                 "tipo": "sistema",
-                "arrays": [0, 0, 0, 0, pegar_planetas(), pegar_estrelas(), pegar_galaxias()],
+                "arrays": [0, 0, 0, 0, self.pegar_planetas(), self.pegar_estrelas(), self.pegar_galaxias()],
                 "type_atribs": ["string", "int", "int", "int", "array", "multi_array"],
                 "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade", "Pertence a"],
                 "atribs": [{"nome": self.nome},
                            {"qt_planetas": self.qt_planetas},
                            {"qt_estrelas": self.qt_estrelas},   
                            {"idade": self.idade},
-                           {"galaxia_id": self.galaxia_id}
+                           {"galaxia_id": self.galaxia_id},
                            {"estrelas": self.estrelas}]}
 
 
@@ -189,7 +189,7 @@ class Estrela(db.Model):
     def infos_tipos(self):
         return {"tam": 5,
                 "tipo": "estrela",
-                "arrays": [0, 0, 0, ["Sim", "Não"], 0, pegar_satelites(), pegar_planetas()],
+                "arrays": [0, 0, 0, ["Sim", "Não"], 0, self.pegar_satelites(), self.pegar_planetas()],
                 "type_atribs": ["string", "float", "int", "array", "float"],
                 "label_atribs": ["Nome", "Tamanho", "Idade", "Possui estrela", "Distância até a terra"],
                 "atribs": [{"nome": self.nome},
@@ -238,7 +238,7 @@ class Planeta(db.Model):
     def infos_tipos(self):
         return {"tam": 6,
                 "tipo": "planeta",
-                "arrays": [0, 0, 0, 0, ["Sim", "Não"], 0, pegar_satelites()],
+                "arrays": [0, 0, 0, 0, ["Sim", "Não"], 0, self.pegar_satelites()],
                 "type_atribs": ["string", "float", "float", "float", "array", "string"],
                 "label_atribs": ["Nome", "Tamanho", "Peso", "Velocidade de rotação", "Possui satélite natural", "Composição do planeta"],
                 "atribs": [{"nome": self.nome},
@@ -358,7 +358,7 @@ def entidades():
     elif request.method == "POST" and "mod" in request.form:
         print("aqui")
         
-        iden = request.form["id"];
+        iden = request.form["id"]
         tipo = request.form["tipo"]
         
         if tipo == "planeta":
