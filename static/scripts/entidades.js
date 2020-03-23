@@ -398,6 +398,20 @@ async function action_modificar(id) {
                             input.appendChild(opt);
                         }
                         break;
+                    case "multi_array":
+                        input = document.createElement("select");
+                        input.setAttribute("multiple", "");
+                        let ls = infos["arrays"][i];
+                        console.log(ls);
+                        for (let i = 0; i < ls.length; i++) {
+                            let opt = document.createElement('option');
+                            opt.setAttribute("value", ls[i]);
+                            opt.innerHTML = ls[i];
+                            if (value.includes(ls[i])) {
+                                opt.setAttribute("selected", "true");
+                            }
+                            input.appendChild(opt);
+                        }
                     default:
                         break;
                 }
@@ -443,8 +457,6 @@ async function action_modificar(id) {
 }
 
 function search() {
-    console.log("wow");
-
     let nome = document.getElementById("busca_nome").value;
     //pla = document.forms.namedItem("busca_pla").innerHTML;
     //est = document.forms.namedItem("busca_est").innerHTML;

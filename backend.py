@@ -32,10 +32,10 @@ class Galaxia(db.Model):
     qt_sistema = db.Column('qt_sistema', db.Integer)
     dist_terra = db.Column('dist_terra', db.Float)
 
-    #sistemas = db.relationship('Sistema', backref='galaxia')
-
-    def __init__(self, nome, qt_sistema, dist_terra):
+    def __init__(self, nome, qt_sistema=None, dist_terra=None):
         self.nome = nome
+        self.qt_sistema = qt_sistema
+        self.dist_terra = None
 
     def header_infos(self):
         return {"id": self.id, "Nome": self.nome}
@@ -73,8 +73,13 @@ class Sistema(db.Model):
 
     estrelas = db.relationship('Estrela', secondary=sistema_estrela, backref=db.backref('sistemas', lazy='dynamic'))
     
-    def __init__(self, nome):
+    def __init__(self, nome, qt_planetas=None, qt_estrelas=None, idade=None, galaxia_id, estrelas=None):
         self.nome = nome
+        self.qt_planetas = qt_planetas
+        self.qt_estrelas = qt_estrelas
+        self.idade = idade
+        self.galaxia_id = galaxia_id
+        self.estrelas = estrelas
 
     def header_infos(self):
         return {"id": self.id, "Nome": self.nome}
@@ -82,15 +87,32 @@ class Sistema(db.Model):
     def infos(self):
         return {"Quantidade de planetas": self.qt_planetas, "Quantidade de estrelas": self.qt_estrelas, "Idade": self.idade}
         
+    def pegar_estrelas(self):
+        ests = Estrelas.query.all()
+        ls = []
+
+        for est in ests:
+            ls.append(ests.id_estrela)
+
+    def pegar_galaxias(self):
+        gals = Galaxias.query.all()
+        ls = []
+
+        for gal in gals:
+            ls.append(gals.id_galaxia)
+
     def infos_tipos(self):
         return {"tam": 4,
                 "tipo": "sistema",
-                "type_atribs": ["string", "int", "int", "int"],
-                "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade"],
+                "arrays": [0, 0, 0, 0, pegar_galaxias(), pegar_estrelas()],
+                "type_atribs": ["string", "int", "int", "int", "array", "multi_array"],
+                "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade", "Pertence a"],
                 "atribs": [{"nome": self.nome},
                            {"qt_planetas": self.qt_planetas},
                            {"qt_estrelas": self.qt_estrelas},   
-                           {"idade": self.idade}]}
+                           {"idade": self.idade},
+                           {"galaxia_id": self.galaxia_id}
+                           {"estrelas": self.estrelas}]}
 
 
 orbitar = db.Table('orbitar',
