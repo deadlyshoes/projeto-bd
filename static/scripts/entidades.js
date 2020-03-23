@@ -148,6 +148,7 @@ function atualizar_campos() {
     let possui_sn = document.getElementById("possui_sn");
     let vel_rotacao = document.getElementById("vel_rotacao");
     let possui_estrela = document.getElementById("possui_estrela");
+    let estrelas = document.getElementById("estrelas");
     
     switch (tipo) {
         case "galaxia":
@@ -164,6 +165,7 @@ function atualizar_campos() {
             possui_sn.style.display = "none";
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
+            sistema_estrelas.style.display = "none";
             break;
         case "estrela":
             nome.style.display = "block";
@@ -179,6 +181,7 @@ function atualizar_campos() {
             possui_sn.style.display = "none";
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "block";
+            sistema_estrelas.style.display = "none";
             break;
         case "sistema":
             nome.style.display = "block";
@@ -194,6 +197,7 @@ function atualizar_campos() {
             possui_sn.style.display = "none";
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
+            sistema_estrelas.style.display = "block";
             break;
         case "planeta":
             nome.style.display = "block";
@@ -209,6 +213,7 @@ function atualizar_campos() {
             possui_sn.style.display = "block";
             vel_rotacao.style.display = "block";
             possui_estrela.style.display = "none";
+            sistema_estrelas.style.display = "none";
             break;
         case "satelite":
             nome.style.display = "block";
@@ -224,6 +229,7 @@ function atualizar_campos() {
             possui_sn.style.display = "none";
             vel_rotacao.style.display = "none";
             possui_estrela.style.display = "none";
+            sistema_estrelas.style.display = "none";
             break;
         default:
             break;
@@ -294,10 +300,33 @@ async function criar_form() {
                     break;
                 case "float":
                     input.setAttribute("type", "number");
+                    input.setAttribute("step", "0.000000000001");
                     break;
                 case "string":
                     input.setAttribute("type", "text");
                     break;
+                case "array":
+                    input = document.createElement("select");
+                    let lista = atrib["array"];
+                    console.log(ls);
+                    for (let i = 0; i < lista.length; i++) {
+                        let opt = document.createElement('option');
+                        opt.setAttribute("value", lista[i]);
+                        opt.innerHTML = lista[i];
+                        input.appendChild(opt);
+                    }
+                    break;
+                case "multi_array":
+                    input = document.createElement("select");
+                    input.setAttribute("multiple", "");
+                    let ls = atrib["array"];
+                    console.log(ls);
+                    for (let i = 0; i < ls.length; i++) {
+                        let opt = document.createElement('option');
+                        opt.setAttribute("value", ls[i]);
+                        opt.innerHTML = ls[i];
+                        input.appendChild(opt);
+                    }
                 default:
                     break;
             }

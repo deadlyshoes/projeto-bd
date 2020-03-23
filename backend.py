@@ -71,9 +71,9 @@ class Sistema(db.Model):
     idade = db.Column('idade', db.Integer)
     galaxia_id = db.Column('galaxia', db.Integer, db.ForeignKey('galaxia.id_galaxia'), nullable=False, primary_key=True)
 
-    estrelas = db.relationship('Estrela', secondary=sistema_estrela, backref=db.backref('sistemas', lazy='dynamic'))
+    sistema_estrelas = db.relationship('Estrela', secondary=sistema_estrela, backref=db.backref('estrela_sistemas', lazy='dynamic'))
     
-    def __init__(self, nome, qt_planetas=None, qt_estrelas=None, idade=None, galaxia_id, estrelas=None):
+    def __init__(self, nome, galaxia_id, qt_planetas=None, qt_estrelas=None, idade=None, estrelas=None):
         self.nome = nome
         self.qt_planetas = qt_planetas
         self.qt_estrelas = qt_estrelas
@@ -109,10 +109,10 @@ class Sistema(db.Model):
                 "label_atribs": ["Nome", "Quantidade de planetas", "Quantidade de estrelas", "Idade", "Pertence a"],
                 "atribs": [{"nome": self.nome},
                            {"qt_planetas": self.qt_planetas},
-                           {"qt_estrelas": self.qt_estrelas},   
+                           {"qt_estrelas": self.qt_estrelas},
                            {"idade": self.idade},
-                           {"galaxia_id": self.galaxia_id}
-                           {"estrelas": self.estrelas}]}
+                           {"galaxia_id": self.galaxia_id},
+                           {"sistema_estrelas": self.sistema_estrelas}]}
 
 
 orbitar = db.Table('orbitar',
@@ -167,7 +167,7 @@ class Planeta(db.Model):
     possui_sn = db.Column('possui_sn', db.Boolean)
     comp_planeta = db.Column('comp_planeta', db.Unicode)
     
-    sistemas = db.relationship('Sistema', secondary=sistema_planeta, backref=db.backref('planetas', lazy='dynamic'))
+    planeta_sistemas = db.relationship('Sistema', secondary=sistema_planeta, backref=db.backref('sistema_planetas', lazy='dynamic'))
     orb_estrelas = db.relationship('Estrela', secondary=orbitar, backref=db.backref('orb_planetas', lazy='dynamic'))
 
     def __init__(self, nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao):
@@ -236,6 +236,40 @@ class GiganteVermelha(db.Model):
     def __init__(self):
         self.morte = False
 
+def pegar_estrelas():
+    ests = Estrela.query.all()
+    ls = []
+
+    for est in ests:
+        ls.append(ests.id_estrela)
+
+def pegar_galaxias():
+    gals = Galaxia.query.all()
+    ls = []
+
+    for gal in gals:
+        ls.append(gals.id_galaxia)
+
+def pegar_planetas():
+    plas = Planeta.query.all()
+    ls = []
+
+    for pla in plas:
+        ls.append(pla.id_planeta)
+
+def pegar_satelites():
+    sats = Satelite.query.all()
+    ls = []
+
+    for sat in sats:
+        ls.append(sat.id_satelite)
+
+def pegar_sistemas():
+    sists = Sistema.query.all()
+    ls = []
+
+    for sist in sists:
+        ls.append(sist.id_satelite)
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -416,7 +450,7 @@ def all_types():
         return jsonify(
             {"tam_tipos": 5,
              "tipos": [{"Planeta": "planeta"}, {"Satélite natural": "satelite"}, {"Estrela": "estrela"}, {"Galáxia": "galaxia"}, {"Sistema planetário": "sistema"}],
-             "tam_atribs": 12,
+             "tam_atribs": 17,
              "atribs": [{"info": "Nome", "tipo": "string", "valor": "nome"},
                         {"info": "Tamanho", "tipo": "float", "valor": "tamanho"}, 
                         {"info": "Peso", "tipo": "float", "valor": "peso"}, 
@@ -428,8 +462,13 @@ def all_types():
                         {"info": "Quantidade sistemas", "tipo": "int", "valor": "qt_sistema"}, 
                         {"info": "Quantidade de planetas", "tipo": "int", "valor": "qt_planetas"},
                         {"info": "Quantidade de estrelas", "tipo": "int", "valor": "qt_estrelas"},
-                        {"info": "Distância até a terra", "tipo": "float", "valor": "dist_terra"}],
-             "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False]}
+                        {"info": "Distância até a terra", "tipo": "float", "valor": "dist_terra"},
+                        {"info": "Pertence a", "tipo": "array", "valor": "galaxia_id", "array": pegar_galaxias},
+                        {"info": "Possui", "tipo": "multi_array", "valor": "sistema_planetas", "array": pegar_planetas},
+                        {"info": "Pertence a", "tipo": "multi_array", "valor": "planeta_sistemas", "array": pegar_sistemas},
+                        {"info": "Possui", "tipo": "multi_array", "valor": "estrela_sistemas", "array": pegar_sistemas},
+                        {"info": "Pertence a", "tipo": "multi_array", "valor": "sistema_estrelas", "array": pegar_estrelas}],
+             "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False, False, False, True, False, False]}
         )
 
 @app.route("/entidades/get_infos_tipos", methods=["POST"])
