@@ -646,12 +646,12 @@ def all_types():
                         {"info": "Composição do planeta", "tipo": "string", "valor": "comp_planeta", "null": True},
                         {"info": "Composição do satélite natural", "tipo": "string", "valor": "comp_sn", "null": True},
                         {"info": "Idade", "tipo": "int", "valor": "idade", "null": True},
-                        {"info": "Possui estrela", "tipo": "array", "valor": "possui_estrela", "array": ["Sim", "Não"], "null": False},
+                        {"info": "Possui estrela", "tipo": "array", "valor": "possui_estrela", "array": ["Sim", "Não"], "null": True},
                         {"info": "Quantidade sistemas", "tipo": "int", "valor": "qt_sistema", "null": True}, 
                         {"info": "Quantidade de planetas", "tipo": "int", "valor": "qt_planetas", "null": True},
                         {"info": "Quantidade de estrelas", "tipo": "int", "valor": "qt_estrelas", "null": True},
                         {"info": "Distância até a terra", "tipo": "float", "valor": "dist_terra", "null": True},
-                        {"info": "Pertence à galáxia", "tipo": "array", "valor": "galaxia_id", "array": pegar_entidade("galaxia"), "null": False},
+                        {"info": "Pertence à galáxia", "tipo": "array", "valor": "galaxia_id", "array": pegar_entidade("galaxia"), "null": True},
                         {"info": "Possui os planetas", "tipo": "multi_array", "valor": "sistema_planetas", "array": pegar_entidade("planeta"), "null": True},
                         {"info": "Pertence aos sistemas", "tipo": "multi_array", "valor": "planeta_sistemas", "array": pegar_entidade("sistema"), "null": True},
                         {"info": "Possui os sistemas", "tipo": "multi_array", "valor": "estrela_sistemas", "array": pegar_entidade("sistema"), "null": True},
@@ -662,7 +662,7 @@ def all_types():
                         {"info": "Orbita as estrelas", "tipo": "multi_array", "valor": "satelite_orb_estrelas", "array": pegar_entidade("estrela"), "null": True},
                         {"info": "É orbitado pelos planetas", "tipo": "multi_array", "valor": "estrela_orb_planetas", "array": pegar_entidade("planeta"), "null": True},
                         {"info": "É orbitado pelos satélites", "tipo": "multi_array", "valor": "estrela_orb_satelites", "array": pegar_entidade("satelite"), "null": True}, 
-                        {"info": "Tipo", "tipo": "string", "valor": "tipo_estrela", "null": False}],
+                        {"info": "Tipo", "tipo": "string", "valor": "tipo_estrela", "null": True}],
              "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False, False, False, False, True, False, False, True, True, False, False, False, False, False]}
         )
 
