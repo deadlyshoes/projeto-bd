@@ -14,6 +14,9 @@ n_sistemas = 0
 def get_obj(ls, tipo):
     r = []
 
+    if ls == None:
+        return r
+
     if tipo == "planeta":
         for ele in ls:
             r.append(Planeta.query.get(ele))
@@ -198,7 +201,7 @@ orbitar = db.Table('orbitar',
         db.Column('satelite_id', db.Integer, db.ForeignKey('satelite.id_satelite')),
         db.Column('planeta_id', db.Integer, db.ForeignKey('planeta.id_planeta')),
         db.Column('estrela_id', db.Integer, db.ForeignKey('estrela.id_estrela')))
-        
+
 
 class Estrela(db.Model):
     __tablename__ = 'estrela'
@@ -227,7 +230,7 @@ class Estrela(db.Model):
         return {"id": self.id, "Nome": self.nome}
 
     def infos(self):
-        return {"Tipo": self.tipo_estrela, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra, "Possui os sistemas:": self.estrela_sistemas, "É orbitado pelos satélites": get_id(self.estrela_orb_satelites), "É orbitado pelos planetas": get_id(self.estrela_orb_planetas)}
+        return {"Tipo": self.tipo_estrela, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra, "Possui os sistemas": get_id(self.estrela_sistemas), "É orbitado pelos satélites": get_id(self.estrela_orb_satelites), "É orbitado pelos planetas": get_id(self.estrela_orb_planetas)}
 
     def pegar_planetas(self):
         planetas = Planeta.query.all()
@@ -248,7 +251,7 @@ class Estrela(db.Model):
         return ids
 
     def pegar_sistemas(self):
-        sistemas = Satelite.query.all()
+        sistemas = Sistema.query.all()
         ids = list()
         for sistema in sistemas:
             ids.append(sistema.id)
@@ -263,7 +266,7 @@ class Estrela(db.Model):
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"idade": self.idade},
-                           {"Possui estrela": from_bool(self.possui_estrela)},
+                           {"possui_estrela": from_bool(self.possui_estrela)},
                            {"dist_terra": self.dist_terra},
                            {"estrela_sistemas": get_id(self.estrela_sistemas)},
                            {"estrela_orb_satelites": get_id(self.estrela_orb_satelites)},
@@ -458,8 +461,8 @@ def entidades():
 
             tmp = Planeta.query.get("planeta" + str(Dados.query.get(1).n_planetas))
             tmp.planeta_sistemas = get_obj(request.form.getlist("planeta_sistemas"), "sistema")
-            tmp.planeta_orb_estrelas = get_obj(request.form.getlist("planeta_orb_estrelas"), "estrelas")
-            tmp.planeta_orb_satelites = get_obj(request.form.getlist("planeta_orb_satelites"), "satelites")
+            tmp.planeta_orb_estrelas = get_obj(request.form.getlist("planeta_orb_estrelas"), "estrela")
+            tmp.planeta_orb_satelites = get_obj(request.form.getlist("planeta_orb_satelites"), "satelite")
         elif tipo == "sistema":
             galaxia_id = request.form["galaxia_id"]
             qt_estrelas = to_none(request.form["tamanho"])
@@ -490,8 +493,8 @@ def entidades():
 
             tmp = Estrela.query.get("estrela" + str(Dados.query.get(1).n_estrelas))
             tmp.estrela_sistemas = get_obj(request.form.getlist("estrela_sistemas"), "sistema")
-            tmp.estrela_orb_planetas = get_obj(request.form.getlist("estrela_orb_planetas"), "planetas")
-            tmp.estrela_orb_satelites = get_obj(request.form.getlist("estrela_orb_satelites"), "satelites")
+            tmp.estrela_orb_planetas = get_obj(request.form.getlist("estrela_orb_planetas"), "planeta")
+            tmp.estrela_orb_satelites = get_obj(request.form.getlist("estrela_orb_satelites"), "satelite")
         elif tipo == "galaxia":
             qt_sistema = to_none(request.form["qt_sistema"])
             dist_terra = to_none(request.form["dist_terra"])
@@ -509,8 +512,8 @@ def entidades():
             db.session.commit()
 
             tmp = Satelite.query.get("satelite" + str(Dados.query.get(1).n_satelites))
-            tmp.satelite_orb_planetas = get_obj(request.form.getlist("satelite_orb_planetas"), "planetas")
-            tmp.satelite_orb_estrelas = get_obj(request.form.getlist("satelite_orb_estrelas"), "estrelas")
+            tmp.satelite_orb_planetas = get_obj(request.form.getlist("satelite_orb_planetas"), "planeta")
+            tmp.satelite_orb_estrelas = get_obj(request.form.getlist("satelite_orb_estrelas"), "estrela")
        
         db.session.commit()
     # MODIFICAR !!!
@@ -528,7 +531,9 @@ def entidades():
             planeta.comp_planeta = request.form["comp_planeta"]
             planeta.possui_sn = to_bool(request.form["possui_sn"])
             planeta.vel_rotacao = request.form["vel_rotacao"]
-            planeta.planeta_sistemas = request.form.getlist("planeta_sistemas")
+            planeta.planeta_sistemas = get_obj(request.form.getlist("planeta_sistemas"), "sistema")
+            planeta.planeta_orb_estrelas = get_obj(request.form.getlist("planeta_orb_estrelas"), "estrela")
+            planeta.planeta_orb_satelites = get_obj(request.form.getlist("planeta_orb_satelites"), "satelite")
         elif tipo == "sistema":
             sistema = Sistema.query.get(iden)
             
@@ -537,8 +542,8 @@ def entidades():
             sistema.qt_estrelas = request.form["tamanho"]
             sistema.qt_planetas = request.form["qt_planetas"]
             sistema.idade = request.form["idade"]
-            sistema.sistema_planetas = request.form.getlist("sistema_planetas")
-            sistema.sistema_estrelas = request.form.getlist("sistema_estrelas")
+            sistema.sistema_planetas = get_obj(request.form.getlist("sistema_planetas"), "planeta")
+            sistema.sistema_estrelas = get_obj(request.form.getlist("sistema_estrelas"), "estrela")
         elif tipo == "estrela":
             estrela = Estrela.query.get(iden)
             
@@ -547,7 +552,9 @@ def entidades():
             estrela.idade = request.form["idade"]
             estrela.possui_estrela = to_bool(request.form["possui_estrela"])
             estrela.dist_terra = request.form["dist_terra"]
-            estrela.estrela_sistemas = request.form.getlist("estrela_sistemas")
+            estrela.estrela_sistemas = get_obj(request.form.getlist("estrela_sistemas"), "sistema")
+            estrela.estrela_orb_planetas = get_obj(request.form.getlist("estrela_orb_planetas"), "planeta")
+            estrela.estrela_orb_satelites = get_obj(request.form.getlist("estrela_orb_satelites"), "satelite")
         elif tipo == "galaxia":
             galaxia = Galaxia.query.get(iden)
             
@@ -561,6 +568,8 @@ def entidades():
             satelite.tamanho = request.form["tamanho"]
             satelite.peso = request.form["peso"]
             satelite.comp_sn = request.form["comp_sn"]
+            satelite.satelite_orb_planetas = get_obj(request.form.getlist("satelite_orb_planetas"), "planeta")
+            satelite.satelite_orb_estrelas = get_obj(request.form.getlist("satelite_orb_estrelas"), "estrela")
         
         db.session.commit()
     elif request.method == "POST":

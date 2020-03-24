@@ -189,8 +189,8 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "none";
             tipo_estrela.style.display = "none";
 
-            galaxia_id.removeAttribute("required");
-	    tipo_estrela.removeAttribute("required");
+            galaxia_id.required = false;
+	    tipo_estrela.required = false;
             break;
         case "estrela":
             nome.style.display = "block";
@@ -220,8 +220,8 @@ function atualizar_campos() {
             tipo_estrela.style.display = "block";
 
 
-            galaxia_id.removeAttribute("required");
-	    tipo_estrela.setAttribute("required", "");
+            galaxia_id.required = false;
+	    tipo_estrela.required = true;
             break;
         case "sistema":
             nome.style.display = "block";
@@ -251,8 +251,8 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "none";
             tipo_estrela.style.display = "none";
 
-            galaxia_id.removeAttribute("required");
-	    tipo_estrela.removeAttribute("required");
+            galaxia_id.required = true;
+	    tipo_estrela.required = false;
             break;
         case "planeta":
             nome.style.display = "block";
@@ -282,8 +282,8 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "none";
             tipo_estrela.style.display = "none";
 
-            galaxia_id.removeAttribute("required");
-	    tipo_estrela.removeAttribute("required");
+            galaxia_id.required = false;
+	    tipo_estrela.required = false;
             break;
         case "satelite":
             nome.style.display = "block";
@@ -313,8 +313,8 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "none";
             tipo_estrela.style.display = "none";
 
-            galaxia_id.setAttribute("required", "");
-	    tipo_estrela.removeAttribute("required");
+            galaxia_id.required = false;
+	    tipo_estrela.required = false;
             break;
         default:
             break;
@@ -415,8 +415,9 @@ async function criar_form() {
             }
 
             input.setAttribute("name", atrib["valor"]);
-	    if (atribs["null"])
-		input.setAttribute("required", "");
+	    if (!atrib["null"]) {
+		input.required = true;
+	    }
             
             field_div.appendChild(label);
             field_div.appendChild(document.createElement("br"));
