@@ -3,6 +3,7 @@ create sequence sistema_seq start 1 increment 1;
 create sequence estrela_seq start 1 increment 1;
 create sequence planeta_seq start 1 increment 1;
 create sequence satelite_seq start 1 increment 1;
+create sequence dados_seq start 1 increment 1;
 
 create table usuario(
     klogin varchar(45),
@@ -10,15 +11,25 @@ create table usuario(
     constraint pk_usuario primary key (klogin)
 );
 
+create table dados(
+    id int default nextval('dados_seq'),
+    n_planetas int,
+    n_satelites int,
+    n_galaxias int,
+    n_sistemas int,
+    n_estrelas int,
+    constraint pk_dados primary key (id)
+);
+
 create table planeta(
-	id_planeta varchar(45) default 'temp',
-	nome varchar(45),
+    id_planeta varchar(45) default 'temp',
+    nome varchar(45),
     tamanho float,
     peso float,
     vel_rotacao float,
     possui_sn bool,
     comp_planeta varchar(45),
-	constraint pk_planeta primary key (id_planeta)
+    constraint pk_planeta primary key (id_planeta)
 );
 
 create table galaxia(
@@ -114,12 +125,12 @@ create table satelite(
 );
 
 create table orbitar(
-	satelite varchar(45),
-  	planeta varchar(45),
-  	estrela varchar(45),
-  	foreign key (satelite) references satelite(id_satelite),
-  	foreign key (planeta) references planeta(id_planeta),
-  	foreign key (estrela) references estrela(id_estrela)
+	satelite_id varchar(45),
+  	planeta_id varchar(45),
+  	estrela_id varchar(45),
+  	foreign key (satelite_id) references satelite(id_satelite),
+  	foreign key (planeta_id) references planeta(id_planeta),
+  	foreign key (estrela_id) references estrela(id_estrela)
 );
 
 create function proxima_chave() returns trigger as $definir_chave$

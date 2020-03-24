@@ -153,6 +153,13 @@ function atualizar_campos() {
     let sistema_planetas = document.getElementById("sistema_planetas");
     let estrela_sistemas = document.getElementById("estrela_sistemas");
     let planeta_sistemas = document.getElementById("planeta_sistemas");
+    let planeta_orb_estrelas = document.getElementById("planeta_orb_estrelas");
+    let planeta_orb_satelites = document.getElementById("planeta_orb_satelites");
+    let satelite_orb_estrelas = document.getElementById("satelite_orb_estrelas");
+    let satelite_orb_planetas = document.getElementById("satelite_orb_planetas");
+    let estrela_orb_planetas = document.getElementById("estrela_orb_planetas");
+    let estrela_orb_satelites = document.getElementById("estrela_orb_satelites");
+    let tipo_estrela = document.getElementById("tipo_estrela");
     
     switch (tipo) {
         case "galaxia":
@@ -174,6 +181,13 @@ function atualizar_campos() {
             galaxia_id.style.display = "none";
             estrela_sistemas.style.display = "none";
             planeta_sistemas.style.display = "none";
+	    planeta_orb_estrelas.style.display = "none";
+	    planeta_orb_satelites.style.display = "none";
+	    satelite_orb_estrelas.style.display = "none";
+	    satelite_orb_planetas.style.display = "none";
+	    estrela_orb_planetas.style.display = "none";
+	    estrela_orb_satelites.style.display = "none";
+            tipo_estrela.style.display = "none";
             break;
         case "estrela":
             nome.style.display = "block";
@@ -194,6 +208,13 @@ function atualizar_campos() {
             galaxia_id.style.display = "none";
             estrela_sistemas.style.display = "block";
             planeta_sistemas.style.display = "none";
+	    planeta_orb_estrelas.style.display = "none";
+	    planeta_orb_satelites.style.display = "none";
+	    satelite_orb_estrelas.style.display = "none";
+	    satelite_orb_planetas.style.display = "none";
+	    estrela_orb_planetas.style.display = "block";
+	    estrela_orb_satelites.style.display = "block";
+            tipo_estrela.style.display = "block";
             break;
         case "sistema":
             nome.style.display = "block";
@@ -214,6 +235,14 @@ function atualizar_campos() {
             galaxia_id.style.display = "block";
             estrela_sistemas.style.display = "none";
             planeta_sistemas.style.display = "none";
+            planeta_sistemas.style.display = "none";
+	    planeta_orb_estrelas.style.display = "none";
+	    planeta_orb_satelites.style.display = "none";
+	    satelite_orb_estrelas.style.display = "none";
+	    satelite_orb_planetas.style.display = "none";
+	    estrela_orb_planetas.style.display = "none";
+	    estrela_orb_satelites.style.display = "none";
+            tipo_estrela.style.display = "none";
             break;
         case "planeta":
             nome.style.display = "block";
@@ -235,6 +264,13 @@ function atualizar_campos() {
             galaxia_id.style.display = "none";
             estrela_sistemas.style.display = "none";
             planeta_sistemas.style.display = "block";
+            planeta_orb_estrelas.style.display = "block";
+	    planeta_orb_satelites.style.display = "block";
+	    satelite_orb_estrelas.style.display = "none";
+	    satelite_orb_planetas.style.display = "none";
+	    estrela_orb_planetas.style.display = "none";
+	    estrela_orb_satelites.style.display = "none";
+            tipo_estrela.style.display = "none";
             break;
         case "satelite":
             nome.style.display = "block";
@@ -256,6 +292,13 @@ function atualizar_campos() {
             galaxia_id.style.display = "none";
             estrela_sistemas.style.display = "none";
             planeta_sistemas.style.display = "none";
+            planeta_orb_estrelas.style.display = "none";
+	    planeta_orb_satelites.style.display = "none";
+	    satelite_orb_estrelas.style.display = "block";
+	    satelite_orb_planetas.style.display = "block";
+	    estrela_orb_planetas.style.display = "none";
+	    estrela_orb_satelites.style.display = "none";
+            tipo_estrela.style.display = "none";
             break;
         default:
             break;

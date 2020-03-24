@@ -33,6 +33,9 @@ def get_obj(ls, tipo):
     return r
 
 def get_id(ls):
+    if ls == None:
+        return None
+
     r = []
 
     for ele in ls:
@@ -54,6 +57,22 @@ def to_none(msg):
     if msg == '':
         return None
     return msg
+
+class Dados(db.Model):
+    __tablename__ = 'dados'
+    id = db.Column('id', db.Integer, primary_key=True)
+    n_planetas = db.Column('n_planetas', db.Integer)
+    n_satelites = db.Column('n_satelites', db.Integer)
+    n_galaxias = db.Column('n_galaxias', db.Integer)
+    n_sistemas = db.Column('n_sistemas', db.Integer)
+    n_estrelas = db.Column('n_estrelas', db.Integer)
+
+    def __init__(self):
+        self.n_planetas = 0
+        self.n_satelites = 0
+        self.n_galaxias = 0
+        self.n_sistemas = 0
+        self.n_estrelas = 0
 
 class Usuario(db.Model):
     __tablename__ = 'usuario'
@@ -191,7 +210,7 @@ class Estrela(db.Model):
     dist_terra = db.Column('dist_terra', db.Float)
     tipo_estrela = db.Column('tipo', db.Enum('Anã Branca', 'Anã Vermelha', 'Estrela Binária', 'Gigante Azul', 'Gigante Vermelha'), nullable=False)
 
-    orb_salites = db.relationship('Satelite', secondary=orbitar, backref=db.backref('orb_estrelas'))
+    estrela_orb_planetas = db.relationship('Planeta', secondary=orbitar, backref=db.backref('planeta_orb_estrelas'))
 
     # gigante_vermelha = db.relationship('GiganteVermelha', uselist=False)
     
@@ -208,7 +227,7 @@ class Estrela(db.Model):
         return {"id": self.id, "Nome": self.nome}
 
     def infos(self):
-        return {"Tipo": self.tipo_estrela, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra, "Possui os sistemas:": self.estrela_sistemas}
+        return {"Tipo": self.tipo_estrela, "Tamanho": self.tamanho, "Idade": self.idade, "Possui estrela": self.possui_estrela, "Distância até a terra": self.dist_terra, "Possui os sistemas:": self.estrela_sistemas, "É orbitado pelos satélites": get_id(self.estrela_orb_satelites), "É orbitado pelos planetas": get_id(self.estrela_orb_planetas)}
 
     def pegar_planetas(self):
         planetas = Planeta.query.all()
@@ -236,17 +255,19 @@ class Estrela(db.Model):
         return ids
     
     def infos_tipos(self):
-        return {"tam": 6,
+        return {"tam": 8,
                 "tipo": "estrela",
-                "arrays": [0, 0, 0, ["Sim", "Não"], 0, self.pegar_sistemas()],
-                "type_atribs": ["string", "float", "int", "array", "float", "multi_array"],
-                "label_atribs": ["Nome", "Tamanho", "Idade", "Possui estrela", "Distância até a terra", "Possui os sistemas"],
+                "arrays": [0, 0, 0, ["Sim", "Não"], 0, self.pegar_sistemas(), self.pegar_satelites(), self.pegar_planetas()],
+                "type_atribs": ["string", "float", "int", "array", "float", "multi_array", "multi_array", "multi_array"],
+                "label_atribs": ["Nome", "Tamanho", "Idade", "Possui estrela", "Distância até a terra", "Possui os sistemas", "É orbitado pelos satélites", "É orbitado pelos planetas"],
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"idade": self.idade},
                            {"Possui estrela": from_bool(self.possui_estrela)},
                            {"dist_terra": self.dist_terra},
-                           {"estrela_sistemas": get_id(self.estrela_sistemas)}]}
+                           {"estrela_sistemas": get_id(self.estrela_sistemas)},
+                           {"estrela_orb_satelites": get_id(self.estrela_orb_satelites)},
+                           {"estrela_orb_planetas": get_id(self.estrela_orb_planetas)}]}
 
 
 class Planeta(db.Model):
@@ -260,7 +281,7 @@ class Planeta(db.Model):
     comp_planeta = db.Column('comp_planeta', db.Unicode)
     
     planeta_sistemas = db.relationship('Sistema', secondary=sistema_planeta, backref=db.backref('sistema_planetas'))
-    orb_estrelas = db.relationship('Estrela', secondary=orbitar, backref=db.backref('orb_planetas'))
+    planeta_orb_satelites = db.relationship('Satelite', secondary=orbitar, backref=db.backref('satelite_orb_planetas'))
 
     def __init__(self, nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao, planeta_sistemas):
         self.nome = nome
@@ -290,23 +311,34 @@ class Planeta(db.Model):
             ids.append(satelite.id)
         return ids
 
+    def pegar_estrelas(self):
+        estrelas = Estrela.query.all()
+        ids = list()
+
+        for estrela in estrelas:
+            ids.append(estrela.id)
+        return ids
+
+
     def infos(self):
         print(self.planeta_sistemas)
-        return {"Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta, "Pertence aos sistemas": get_id(self.planeta_sistemas)}
+        return {"Tamanho": self.tamanho, "Peso": self.peso, "Velocidade de rotação": self.vel_rotacao, "Possui satélite natural": self.possui_sn, "Composição do planeta": self.comp_planeta, "Pertence aos sistemas": get_id(self.planeta_sistemas), "É orbitado pelos satélites": get_id(self.planeta_orb_satelites), "Orbita as estrelas": get_id(self.planeta_orb_estrelas)}
         
     def infos_tipos(self):
-        return {"tam": 7,
+        return {"tam": 9,
                 "tipo": "planeta",
-                "arrays": [0, 0, 0, 0, ["Sim", "Não"], 0, self.pegar_sistemas()],
-                "type_atribs": ["string", "float", "float", "float", "array", "string", "multi_array"],
-                "label_atribs": ["Nome", "Tamanho", "Peso", "Velocidade de rotação", "Possui satélite natural", "Composição do planeta", "Pertence aos sistemas"],
+                "arrays": [0, 0, 0, 0, ["Sim", "Não"], 0, self.pegar_sistemas(), self.pegar_satelites(), self.pegar_estrelas()],
+                "type_atribs": ["string", "float", "float", "float", "array", "string", "multi_array", "multi_array", "multi_array"],
+                "label_atribs": ["Nome", "Tamanho", "Peso", "Velocidade de rotação", "Possui satélite natural", "Composição do planeta", "Pertence aos sistemas", "É orbitado pelos satélites", "Orbita as estrelas"],
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"peso": self.peso},
                            {"vel_rotacao": self.vel_rotacao},
                            {"possui_sn": from_bool(self.possui_sn)},
                            {"comp_planeta": self.comp_planeta},
-                           {"planeta_sistemas": get_id(self.planeta_sistemas)}]}
+                           {"planeta_sistemas": get_id(self.planeta_sistemas)},
+                           {"planeta_orb_satelites": get_id(self.planeta_orb_satelites)},
+                           {"planeta_orb_estrelas": get_id(self.planeta_orb_estrelas)}]}
 
 
 class Satelite(db.Model):
@@ -317,7 +349,7 @@ class Satelite(db.Model):
     peso = db.Column('peso', db.Float)
     comp_sn = db.Column('comp_sn', db.Unicode)
 
-    orb_planetas = db.relationship('Planeta', secondary=orbitar, backref=db.backref('orb_satelites'))
+    satelite_orb_estrelas = db.relationship('Estrela', secondary=orbitar, backref=db.backref('estrela_orb_satelites'))
 
     def __init__(self, nome, tamanho, peso, comp_sn):
         self.nome = nome
@@ -329,17 +361,19 @@ class Satelite(db.Model):
         return {"id": self.id, "Nome": self.nome}
         
     def infos(self):
-        return {"Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn}
+        return {"Tamanho": self.tamanho, "Peso": self.peso, "Composição": self.comp_sn, "Orbita as estrelas": get_id(self.satelite_orb_estrelas), "Orbita os planetas": get_id(self.satelite_orb_planetas)}
 
     def infos_tipos(self):
-        return {"tam": 4,
+        return {"tam": 6,
                 "tipo": "satelite",
-                "type_atribs": ["string", "flaot", "float", "string"],
-                "label_atribs": ["Nome", "Tamanho", "Peso", "Composição"],
+                "type_atribs": ["string", "flaot", "float", "string", "multi_array", "multi_array"],
+                "label_atribs": ["Nome", "Tamanho", "Peso", "Composição", "Orbita as estrelas", "Orbita os planetas"],
                 "atribs": [{"nome": self.nome},
                            {"tamanho": self.tamanho},
                            {"peso": self.peso},
-                           {"comp_satelite": self.comp_satelite}]}
+                           {"comp_satelite": self.comp_satelite},
+                           {"satelite_orb_estrelas": get_id(self.satelite_orb_estrelas)},
+                           {"satelite_orb_planetas": get_id(self.satelite_orb_planetas)}]}
 
 
 class GiganteVermelha(db.Model):
@@ -370,6 +404,10 @@ def pegar_entidade(tipo):
 @app.route("/", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        if len(Dados.query.all()) == 0:
+            db.session.add(Dados())
+            db.session.commit()
+
         login = request.form["username"]
         senha = request.form["password"]
         
@@ -382,6 +420,10 @@ def login():
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
     if request.method == "POST":
+        if len(Dados.query.all()) == 0:
+            db.session.add(Dados())
+            db.session.commit()
+
         login = request.form["username"]
         senha = request.form["password"]
         
@@ -397,11 +439,6 @@ def registro():
 def entidades():
     
     if request.method == "POST" and "add" in request.form:
-        global n_planetas
-        global n_satelites
-        global n_sistemas
-        global n_estrelas
-
         nome = request.form["nome"]
         tipo = request.form["tipo"]
         
@@ -415,9 +452,14 @@ def entidades():
             db.session.add(Planeta(nome, tamanho, peso, comp_planeta, possui_sn, vel_rotacao, []))
             db.session.commit()
 
-            n_planetas += 1
-            tmp = Planeta.query.get("planeta" + str(n_planetas))
+            
+            Dados.query.get(1).n_planetas = Dados.query.get(1).n_planetas + 1
+            db.session.commit()
+
+            tmp = Planeta.query.get("planeta" + str(Dados.query.get(1).n_planetas))
             tmp.planeta_sistemas = get_obj(request.form.getlist("planeta_sistemas"), "sistema")
+            tmp.planeta_orb_estrelas = get_obj(request.form.getlist("planeta_orb_estrelas"), "estrelas")
+            tmp.planeta_orb_satelites = get_obj(request.form.getlist("planeta_orb_satelites"), "satelites")
         elif tipo == "sistema":
             galaxia_id = request.form["galaxia_id"]
             qt_estrelas = to_none(request.form["tamanho"])
@@ -427,8 +469,10 @@ def entidades():
             db.session.add(Sistema(nome, galaxia_id, qt_planetas, qt_estrelas, idade, [], []))
             db.session.commit()
 
-            n_sistemas += 1
-            tmp = Sistema.query.get("sistema" + str(n_sistemas))
+            Dados.query.get(1).n_sistemas = Dados.query.get(1).n_sistemas + 1
+            db.session.commit()
+
+            tmp = Sistema.query.get("sistema" + str(Dados.query.get(1).n_sistemas))
             tmp.sistema_estrelas = get_obj(request.form.getlist("sistema_estrelas"), "estrela")
             tmp.sistema_planetas = get_obj(request.form.getlist("sistema_planetas"), "planeta") 
         elif tipo == "estrela":
@@ -440,10 +484,14 @@ def entidades():
             
             db.session.add(Estrela(nome, tipo_estrela, tamanho, idade, possui_estrela, dist_terra, []))
             db.session.commit()
+            
+            Dados.query.get(1).n_estrelas = Dados.query.get(1).n_estrelas + 1
+            db.session.commit()
 
-            n_estrelas += 1
-            tmp = Sistema.query.get("estrela" + str(n_estrelas))
+            tmp = Estrela.query.get("estrela" + str(Dados.query.get(1).n_estrelas))
             tmp.estrela_sistemas = get_obj(request.form.getlist("estrela_sistemas"), "sistema")
+            tmp.estrela_orb_planetas = get_obj(request.form.getlist("estrela_orb_planetas"), "planetas")
+            tmp.estrela_orb_satelites = get_obj(request.form.getlist("estrela_orb_satelites"), "satelites")
         elif tipo == "galaxia":
             qt_sistema = to_none(request.form["qt_sistema"])
             dist_terra = to_none(request.form["dist_terra"])
@@ -455,7 +503,15 @@ def entidades():
             comp_sn = to_none(request.form["comp_sn"])
             
             db.session.add(Satelite(nome, tamanho, peso, comp_sn))
-        
+            db.session.commit()
+
+            Dados.query.get(1).n_satelites = Dados.query.get(1).n_satelites + 1
+            db.session.commit()
+
+            tmp = Satelite.query.get("satelite" + str(Dados.query.get(1).n_satelites))
+            tmp.satelite_orb_planetas = get_obj(request.form.getlist("satelite_orb_planetas"), "planetas")
+            tmp.satelite_orb_estrelas = get_obj(request.form.getlist("satelite_orb_estrelas"), "estrelas")
+       
         db.session.commit()
     # MODIFICAR !!!
     elif request.method == "POST" and "mod" in request.form:
@@ -581,7 +637,7 @@ def all_types():
         return jsonify(
             {"tam_tipos": 5,
              "tipos": [{"Planeta": "planeta"}, {"Satélite natural": "satelite"}, {"Estrela": "estrela"}, {"Galáxia": "galaxia"}, {"Sistema planetário": "sistema"}],
-             "tam_atribs": 18,
+             "tam_atribs": 25,
              "atribs": [{"info": "Nome", "tipo": "string", "valor": "nome", "null": False},
                         {"info": "Tamanho", "tipo": "float", "valor": "tamanho", "null": True}, 
                         {"info": "Peso", "tipo": "float", "valor": "peso", "null": True},
@@ -595,12 +651,19 @@ def all_types():
                         {"info": "Quantidade de planetas", "tipo": "int", "valor": "qt_planetas", "null": True},
                         {"info": "Quantidade de estrelas", "tipo": "int", "valor": "qt_estrelas", "null": True},
                         {"info": "Distância até a terra", "tipo": "float", "valor": "dist_terra", "null": True},
-                        {"info": "Pertence a", "tipo": "array", "valor": "galaxia_id", "array": pegar_entidade("galaxia"), "null": False},
-                        {"info": "Possui", "tipo": "multi_array", "valor": "sistema_planetas", "array": pegar_entidade("planeta"), "null": True},
-                        {"info": "Pertence a", "tipo": "multi_array", "valor": "planeta_sistemas", "array": pegar_entidade("sistema"), "null": True},
-                        {"info": "Possui", "tipo": "multi_array", "valor": "estrela_sistemas", "array": pegar_entidade("sistema"), "null": True},
-                        {"info": "Pertence a", "tipo": "multi_array", "valor": "sistema_estrelas", "array": pegar_entidade("estrela"), "null": True}],
-             "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False, False, False, False, True, False, False]}
+                        {"info": "Pertence à galáxia", "tipo": "array", "valor": "galaxia_id", "array": pegar_entidade("galaxia"), "null": False},
+                        {"info": "Possui os planetas", "tipo": "multi_array", "valor": "sistema_planetas", "array": pegar_entidade("planeta"), "null": True},
+                        {"info": "Pertence aos sistemas", "tipo": "multi_array", "valor": "planeta_sistemas", "array": pegar_entidade("sistema"), "null": True},
+                        {"info": "Possui os sistemas", "tipo": "multi_array", "valor": "estrela_sistemas", "array": pegar_entidade("sistema"), "null": True},
+                        {"info": "Pertence às estrelas", "tipo": "multi_array", "valor": "sistema_estrelas", "array": pegar_entidade("estrela"), "null": True},
+                        {"info": "É orbitado pelos satélites", "tipo": "multi_array", "valor": "planeta_orb_satelites", "array": pegar_entidade("satelite"), "null": True},
+                        {"info": "Orbita as estrelas", "tipo": "multi_array", "valor": "planeta_orb_estrelas", "array": pegar_entidade("estrela"), "null": True},
+                        {"info": "Orbita os planetas", "tipo": "multi_array", "valor": "satelite_orb_planetas", "array": pegar_entidade("planeta"), "null": True},
+                        {"info": "Orbita as estrelas", "tipo": "multi_array", "valor": "satelite_orb_estrelas", "array": pegar_entidade("estrela"), "null": True},
+                        {"info": "É orbitado pelos planetas", "tipo": "multi_array", "valor": "estrela_orb_planetas", "array": pegar_entidade("planeta"), "null": True},
+                        {"info": "É orbitado pelos satélites", "tipo": "multi_array", "valor": "estrela_orb_satelites", "array": pegar_entidade("satelite"), "null": True}, 
+                        {"info": "Tipo", "tipo": "string", "valor": "tipo_estrela", "null": False}],
+             "vis_atribs": [True, True, True, True, True, True, False, False, False, False, False, False, False, False, False, True, False, False, True, True, False, False, False, False, False]}
         )
 
 @app.route("/entidades/get_infos_tipos", methods=["POST"])
