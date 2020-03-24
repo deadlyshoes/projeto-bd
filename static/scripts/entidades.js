@@ -189,7 +189,7 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "none";
             tipo_estrela.style.display = "none";
 
-            galaxia_id.remoteAttribute("required");
+            galaxia_id.removeAttribute("required");
 	    tipo_estrela.removeAttribute("required");
             break;
         case "estrela":
@@ -220,7 +220,7 @@ function atualizar_campos() {
             tipo_estrela.style.display = "block";
 
 
-            galaxia_id.remoteAttribute("required");
+            galaxia_id.removeAttribute("required");
 	    tipo_estrela.setAttribute("required", "");
             break;
         case "sistema":
