@@ -166,7 +166,7 @@ function atualizar_campos() {
             nome.style.display = "block";
             qt_estrelas.style.display = "none";
             qt_planetas.style.display = "none";
-            qt_sistema.style.display = "block";
+            qt_sistema.style.display = "none";
             dist_terra.style.display = "block";
             idade.style.display = "none";
             tamanho.style.display = "none";
@@ -219,14 +219,13 @@ function atualizar_campos() {
 	    estrela_orb_satelites.style.display = "block";
             tipo_estrela.style.display = "block";
 
-
             galaxia_id.required = false;
 	    tipo_estrela.required = true;
             break;
         case "sistema":
             nome.style.display = "block";
-            qt_estrelas.style.display = "block";
-            qt_planetas.style.display = "block";
+            qt_estrelas.style.display = "none";
+            qt_planetas.style.display = "none";
             qt_sistema.style.display = "none";
             dist_terra.style.display = "none";
             idade.style.display = "block";
@@ -265,7 +264,7 @@ function atualizar_campos() {
             peso.style.display = "block";
             comp_planeta.style.display = "block";
             comp_sn.style.display = "none";
-            possui_sn.style.display = "block";
+            possui_sn.style.display = "none";
             vel_rotacao.style.display = "block";
             possui_estrela.style.display = "none";
             sistema_estrelas.style.display = "none";
