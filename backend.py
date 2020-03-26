@@ -6,10 +6,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://qqoqrjyiraaihu:f61c12db70772
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-n_planetas = 0
-n_estrelas = 0
-n_satelites = 0
-n_sistemas = 0
+logado = 0
 
 def get_obj(ls, tipo):
     r = []
@@ -411,6 +408,8 @@ def pegar_entidade(tipo):
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+    global logado
+    logado = 0
     if request.method == "POST":
         if len(Dados.query.all()) == 0:
             db.session.add(Dados())
@@ -422,11 +421,14 @@ def login():
         usuario = Usuario.query.get(login)
         if (usuario == None or usuario.senha != senha):
             return render_template("login.html", tipo="error")
+        logado = 1
         return redirect("entidades")
     return render_template("login.html", tipo="hidden")
 
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
+    global logado
+    logado = 0
     if request.method == "POST":
         if len(Dados.query.all()) == 0:
             db.session.add(Dados())
@@ -440,12 +442,15 @@ def registro():
             return redirect("registro.html", tipo="error")
         db.session.add(Usuario(login, senha))
         db.session.commit()
+        logado = 1
         return redirect("entidades")
     return render_template("registro.html", tipo="hidden")
 
 @app.route("/entidades", methods=["GET", "POST"])
 def entidades():
-    
+    global logado
+    if logado == 0:
+        return redirect(url_for('login'))
     if request.method == "POST" and "add" in request.form:
         nome = request.form["nome"]
         tipo = request.form["tipo"]
