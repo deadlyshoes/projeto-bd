@@ -112,12 +112,18 @@ async function get_entidades(nome, filtros) {
             remover.className = "close canto-dir";
             remover.innerHTML = "&#10005";
             remover.onclick = function() {remover_entidade(obj["id"])};
+	    remover.addEventListener('click', function (event) {
+		    event.stopPropagation();
+	    });
             div_dir.appendChild(remover);
     
             let modificar = document.createElement("span");
             modificar.className = "close canto-dir";
             modificar.innerHTML = "&#9998";
             modificar.onclick = function() {action_modificar(obj["id"])};
+	    modificar.addEventListener('click', function (event) {
+		    event.stopPropagation();
+	    });
             div_dir.appendChild(modificar);
     
             div.appendChild(div_esq);
