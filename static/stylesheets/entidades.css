@@ -1,3 +1,7 @@
+body {
+	margin: 0;
+}
+
 .cabecalho {
 	width: 100%;
 	border-bottom: 1px solid #ccc;
@@ -49,6 +53,7 @@ a {
 }
 
 .mini-cabecalho-infos {
+    margin-top: 10px;
     padding-top: 1px;
     padding-left: 15px;
     clear: left;
@@ -107,11 +112,21 @@ a {
 	font-size: 14px;
 }
 
-input[type="text"], [type="number"], input[type="password"] {
+input[type="text"], input[type="number"] {
 	width: 100%;
 	margin-top: 5px;
 	margin-bottom: 15px;
 	padding: 6px 8px;
+	font-family: sans-serif;
+	font-size: 14px;
+}
+
+input[type="search"] {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	margin-left: 3px;
+	padding: 6px 8px;
+	width 30%;
 	font-family: sans-serif;
 	font-size: 14px;
 }
@@ -139,7 +154,6 @@ select {
 	margin-top: 5px;
 	margin-bottom: 15px;
 	padding: 6px 8px;
-	border: 1px solid #ccc;
 	font-family: sans-serif;
 	font-size: 14px;
 }

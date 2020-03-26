@@ -20,7 +20,7 @@ async function print_infos(id) {
         
         let div = document.createElement("div");
         div.id = "infos-" + id;
-        div.style.clear = "left";
+	div.className = "mini-cabecalho-infos";
         
         for (const [key, value] of Object.entries(infos)) {
             let p = document.createElement("p");
@@ -29,7 +29,6 @@ async function print_infos(id) {
             div.appendChild(p);
         }
         
-        mini_header.style.minHeight = "100px";
         mini_header.appendChild(div);
         mini_header.onclick = function() {hide_infos(this.id);};
     }
@@ -38,7 +37,6 @@ async function print_infos(id) {
 function hide_infos(id) {
     let mini_header = document.getElementById(id);
     let infos = document.getElementById("infos-" + id);
-    mini_header.style.minHeight = "20px";
     mini_header.removeChild(infos);
     mini_header.onclick = function() {print_infos(this.id);};
 }
