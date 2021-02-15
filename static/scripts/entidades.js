@@ -1,7 +1,12 @@
+var mini_header_height = 0;
+
 async function print_infos(id) {
     let mini_header = document.getElementById(id);
     mini_header.onclick = null;
-    
+
+    mini_header_height = mini_header.offsetHeight;
+    mini_header.style.maxHeight = mini_header_height;
+
     let data = id;
     console.log(data)
     var options = {
@@ -20,7 +25,7 @@ async function print_infos(id) {
         
         let div = document.createElement("div");
         div.id = "infos-" + id;
-	div.className = "mini-cabecalho-infos";
+	    div.className = "mini-cabecalho-infos";
         
         for (const [key, value] of Object.entries(infos)) {
             let p = document.createElement("p");
@@ -29,6 +34,7 @@ async function print_infos(id) {
             div.appendChild(p);
         }
         
+        mini_header.style.maxHeight = "500px";
         mini_header.appendChild(div);
         mini_header.onclick = function() {hide_infos(this.id);};
     }
@@ -37,8 +43,11 @@ async function print_infos(id) {
 function hide_infos(id) {
     let mini_header = document.getElementById(id);
     let infos = document.getElementById("infos-" + id);
-    mini_header.removeChild(infos);
-    mini_header.onclick = function() {print_infos(this.id);};
+    mini_header.addEventListener("transitionend", function() {
+        this.removeChild(infos);
+        this.onclick = function() {print_infos(this.id);};
+    }, {once: true});
+    mini_header.style.maxHeight = mini_header_height;
 }
 
 async function remover_entidade(id) {
