@@ -17,13 +17,13 @@ form {
 	margin-top: 0px;
 	margin-bottom: 0px;
 	font-family: sans-serif;
-	font-size: 80px;
+	font-size: 5em;
 	text-align: center;
 }
 
 .box p {
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 }
 
 .error {
@@ -33,7 +33,7 @@ form {
 	background-color: #ffdce0;
 	border: 1px solid #86181d;
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 	color: #86181d;
 }
 
@@ -44,9 +44,11 @@ form {
 .login-box {
 	border: 1px solid #ccc;
 	padding: 20px;
+	width: 20em;
+	max-width: 360px;
 	background-color: #ffffff;
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 }
 
 select {
@@ -56,17 +58,17 @@ select {
 	padding: 6px 8px;
 	border: 1px solid #ccc;
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 }
 
 input[type="text"], input[type="password"] {
 	width: 100%;
-	margin-top: 5px;
+	margin-top: 6px;
 	margin-bottom: 15px;
 	padding: 6px 8px;
 	border: 1px solid #ccc;
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 }
 
 input[type=text]:focus, input[type="password"]:focus {
@@ -76,10 +78,11 @@ input[type=text]:focus, input[type="password"]:focus {
 input[type="submit"] {
 	padding: 6px 8px;
 	width: 100%;
+	margin-top: 5px;
 	border: 1px solid #555;
 	text-align: center;
 	font-family: sans-serif;
-	font-size: 14px;
+	font-size: 1em;
 	cursor: pointer;
 }
 
@@ -88,4 +91,5 @@ input[type="submit"] {
 	margin-top: 15px;
 	border: 1px solid #ccc;
 	text-align: center;
+	font-size: 1em;
 }
