@@ -216,7 +216,7 @@ class Estrela(db.Model):
     
     def __init__(self, nome, tipo, tamanho, idade, possui_estrela, dist_terra, estrela_sistemas):
         self.nome = nome
-        self.tipo_estrela = 'Anã Branca'
+        self.tipo_estrela = 'Gigante Vermelha'
         self.tamanho = tamanho
         self.idade = idade
         self.possui_estrela = possui_estrela
